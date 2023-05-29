@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({
     database: process.env.DB_DATABASE,
@@ -13,6 +13,9 @@ export class StoreEntity extends BaseEntity {
         default: '',
     })
     name: string;
+
+    @Columnt()
+    is_valid: boolean;
 
     @Column({
         default: '',

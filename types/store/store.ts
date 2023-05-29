@@ -3,8 +3,6 @@ export interface StoreCreate {
     url: string;
     consumer_key: string;
     consumer_secret: string;
-    admin_login: string;
-    admin_password: string;
 }
 
 export interface StoreProfile extends StoreCreate {
@@ -16,6 +14,7 @@ export interface StoreProfileRes {
     id: string;
     name: string;
     url: string;
+    is_valid: boolean;
 }
 
 export type StoreRes = StoreProfileRes
