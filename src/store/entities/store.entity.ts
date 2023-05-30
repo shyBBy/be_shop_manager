@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {UserEntity} from "../../user/entities/user.entity";
 
 @Entity({
     database: process.env.DB_DATABASE,
@@ -13,9 +14,6 @@ export class StoreEntity extends BaseEntity {
         default: '',
     })
     name: string;
-
-    @Columnt()
-    is_valid: boolean;
 
     @Column({
         default: '',
@@ -32,13 +30,10 @@ export class StoreEntity extends BaseEntity {
     })
     consumer_secret: string;
 
-    @Column({
-        default: '',
-    })
-    admin_login: string;
+    // @OneToOne(() => UserEntity, user => user.storeData)
+    // userProfile: UserEntity;
 
-    @Column({
-        default: '',
-    })
-    admin_password: string;
+    @ManyToOne((type) => UserEntity, (entity) => entity.storeData)
+    userProfile: UserEntity;
+
 }

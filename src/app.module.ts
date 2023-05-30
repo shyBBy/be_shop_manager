@@ -9,6 +9,7 @@ import { UserEntity } from './user/entities/user.entity';
 import { OrderModule } from './order/order.module';
 import { StatusModule } from './status/status.module';
 import { StoreModule } from './store/store.module';
+import {StoreEntity} from "./store/entities/store.entity";
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { StoreModule } from './store/store.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [UserEntity],
+      entities: [UserEntity, StoreEntity],
       bigNumberStrings: Boolean(process.env.DB_BIG_NUMBER_STRINGS),
       logging: Boolean(process.env.DB_LOGGING),
       synchronize: Boolean(process.env.DB_SYNCHRONIZE),

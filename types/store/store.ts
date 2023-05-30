@@ -14,7 +14,6 @@ export interface StoreProfileRes {
     id: string;
     name: string;
     url: string;
-    is_valid: boolean;
 }
 
 export type StoreRes = StoreProfileRes

@@ -64,6 +64,7 @@ export class UserService {
     return {
       id: selectedUser.id,
       email: selectedUser.email,
+
     };
   }
 
