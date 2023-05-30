@@ -13,36 +13,33 @@ export class StoreService {
 
     async check(storeCheclDto: StoreCheckDto) {
         const { url, admin_login, admin_password } = storeCheclDto
-        try {
-            const response = await axios.post(`${url}/wp-json/jwt-auth/v1/token`, {
-                username: admin_login,
-                password: admin_password,
-            });
-
-            console.log(response.data);
-
-            const token = response.data.token
-
-            if (token) {
-                try {
-                    //endpoint na sprawdzenie tokenu
-
-                    return
-                } catch (e) {
-
-                }
-            }
-
-
-        } catch (error) {
-            throw new HttpException(
+        
+        const loginUrl = `${url}/wp-json/jwt-auth/v1/token`
+        
+        
+       try {
+         const res = await axios.post(loginUrl,{
+           username: admin_login,
+           password: admin_password
+         })
+         
+         if (!res.success === true) {
+           throw new HttpException(
                 {
-                    message: 'Coś poszło nie tak.',
+                    message: `Blad autoryzacji aklepu, spróbuj ponownie.`,
                     isSuccess: false,
                 },
                 HttpStatus.BAD_REQUEST,
             );
-        }
+         }
+         
+         const store = await Store
+         
+         return createResponse(true, 'Pomyślnie zweryfikowano sklep.', 200)
+       } catch(e){
+         
+         
+       }
 
 
     }
@@ -76,4 +73,5 @@ export class StoreService {
         // await store.save();
         return createResponse(true, `Pomyślnie skonfigurowano sklep`, 200);
     }
+    
 }

@@ -3,7 +3,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 export const checkStoreUtils = async (admin_login: string, admin_password: string, store_url: string) => {
     try {
-        const response = await axios.post(`${store_url}/wp-json/jwt-auth/v1/token`, {
+        const response = await axios.post(store_url'/wp-json/jwt-auth/v1/token', {
             username: admin_login,
             password: admin_password,
         });
