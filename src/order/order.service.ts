@@ -1,7 +1,6 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {DataSource} from "typeorm";
 import {GetListOfAllOrdersResponse} from "../../types/order/order";
-import { encode } from 'base-64';
 import {createAuthHeadersFromStoreCredentials} from "../utils/createAuthHeadersFromStoreCredentials";
 import axios from "axios";
 
@@ -9,13 +8,14 @@ import axios from "axios";
 export class OrderService {
     constructor(private dataSource: DataSource){}
 
-    async getAllOrders(store_url, consumer_key, consumer_secret): Promise<GetListOfAllOrdersResponse> {
+    async getAllOrders(req: Request): Promise<GetListOfAllOrdersResponse> {
 
-        const headers = createAuthHeadersFromStoreCredentials(consumer_key, consumer_secret);
-        const url = `${store_url}/wp-json/wc/v3/orders`
-
+        const url = `${req.session.data.store_url}/wp-json/wc/v3/orders`
+       
         try {
-            const res = await axios.get(url, {headers});
+            const res = await axios.get(url, {
+              headers: req.session.data.headers
+            });
             const orders = res.data || [];
             return orders
 
@@ -29,6 +29,21 @@ export class OrderService {
             );
         }
 
+    }
+    
+    
+    async getOneById(req: Request, order_id): Promise <> {
+      const url = `${req.session.data.store_url}/wp-json/wc/v3/orders/${order_id}`
+      
+      try {
+        
+        const res = axios.get(url,{headers: req.session.data.headers});
+        const order = res.data || {}
+        return order
+        
+      } catch(e) {
+        
+      }
     }
 
 }

@@ -11,7 +11,9 @@ export class OrderController {
 
   @Get('/list')
   @UseGuards(JwtAuthGuard)
-  getAll(@UserObj() user: UserEntity): Promise<GetListOfAllOrdersResponse> {
-    return this.orderService.getAllOrders(user.storeData[0].url,user.storeData[0].consumer_key, user.storeData[0].consumer_secret)
+  getAll(@Req() req: Request): Promise<GetListOfAllOrdersResponse> {
+    return this.orderService.getAllOrders(req)
   }
+  
+  @Get('/')
 }

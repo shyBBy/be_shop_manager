@@ -24,8 +24,8 @@ export class UserEntity extends BaseEntity {
     // storeData: StoreEntity;
 
 
-    @OneToMany(()=> StoreEntity, (entity) => entity.userProfile, {
-      eager: true
-    })
-    storeData: StoreEntity[];
+    //@OneToMany(()=> StoreEntity, (entity) => entity.userProfile, {
+    //  eager: true
+   // })
+    //storeData: StoreEntity[];
 }

@@ -34,4 +34,8 @@ import {StoreEntity} from "./store/entities/store.entity";
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(SessionMiddleware).forRoutes('*');
+  }
+}
