@@ -38,7 +38,7 @@ export class UserService {
 
     try {
       const user = new UserEntity();
-      user.id = uuid();
+      user.uuid = uuid();
       user.email = email;
       user.password = hashPwd(password);
       await user.save();
@@ -63,6 +63,7 @@ export class UserService {
       .getOne();
     return {
       id: selectedUser.id,
+      uuid: selectedUser.uuid,
       email: selectedUser.email,
 
     };

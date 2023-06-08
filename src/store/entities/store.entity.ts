@@ -1,5 +1,4 @@
-import {BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import {UserEntity} from "../../user/entities/user.entity";
+import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity({
     database: process.env.DB_DATABASE,
@@ -7,8 +6,14 @@ import {UserEntity} from "../../user/entities/user.entity";
 })
 
 export class StoreEntity extends BaseEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+
+    @PrimaryGeneratedColumn('increment')
+    id: number;
+
+    @Column({
+        default: '',
+    })
+    uuid: string;
 
     @Column({
         default: '',
@@ -30,10 +35,15 @@ export class StoreEntity extends BaseEntity {
     })
     consumer_secret: string;
 
-    // @OneToOne(() => UserEntity, user => user.storeData)
-    // userProfile: UserEntity;
+    @Column({
+        default: '',
+    })
+    user_uuid: string;
 
-    @ManyToOne((type) => UserEntity, (entity) => entity.storeData)
-    userProfile: UserEntity;
+    @Column({
+        default: '',
+        length: 1000, // Zwiększona długość kolumny na 1000
+    })
+    furgonetka_access_token: string;
 
 }

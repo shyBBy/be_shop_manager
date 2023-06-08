@@ -4,13 +4,16 @@ export interface UserCreate {
 }
 
 export interface UserProfile extends UserCreate {
-    id: string;
+    id: number;
+    uuid: string;
 }
 
 
 export interface UserProfileRes {
-    id: string;
+    id: number;
+    uuid: string;
     email: string;
 }
 
 export type UserRes = UserProfileRes
+

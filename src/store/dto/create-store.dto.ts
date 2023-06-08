@@ -1,19 +1,6 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { StoreCreate } from "../../../types/store/store";
+import {IsNotEmpty, IsOptional, IsString} from 'class-validator';
+import {StoreCreate} from "../../../types/store/store";
 
-export class StoreCheckDto {
-    @IsString()
-    @IsNotEmpty()
-    url: string;
-
-    @IsString()
-    @IsNotEmpty()
-    admin_login: string;
-
-    @IsString()
-    @IsNotEmpty()
-    admin_password: string;
-};
 
 export class StoreCreateDto implements StoreCreate {
     @IsString()
@@ -31,6 +18,10 @@ export class StoreCreateDto implements StoreCreate {
     @IsString()
     @IsNotEmpty()
     consumer_secret: string;
+
+    @IsOptional()
+    user_id: string;
+
 }
 
 export class StoreProfileDto {
@@ -55,10 +46,5 @@ export class StoreProfileDto {
     consumer_secret: string;
 
     @IsString()
-    @IsNotEmpty()
-    admin_login: string;
-
-    @IsString()
-    @IsNotEmpty()
-    admin_password: string;
+    user_id: string;
 }

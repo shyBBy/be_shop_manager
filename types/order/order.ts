@@ -142,6 +142,20 @@ export interface OrderProfileInterface {
     };
 }
 
-export type GetOneOrderResponse = OrderProfileInterface
+
+export interface SimpleOrderInterface {
+    id: number;
+    tracking_number: string;
+    order_id: string;
+    state_description: string;
+}
+
+export interface GetOneOrderResponse {
+    order: OrderProfileInterface,
+    shipping: any,
+    shipping_tracking: any;
+}
+
+// export type GetOneOrderResponse = OrderProfileInterface
 
 export type GetListOfAllOrdersResponse = GetOneOrderResponse[]

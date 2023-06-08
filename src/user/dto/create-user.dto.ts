@@ -11,17 +11,3 @@ export class UserCreateDto implements UserCreate {
   password: string;
 }
 
-export class UserProfileDto {
-  @IsString()
-  @IsNotEmpty()
-  id: string;
-
-  @IsEmail()
-  @IsString()
-  @IsNotEmpty()
-  email: string;
-
-  @IsString()
-  @IsNotEmpty()
-  password: string;
-}

@@ -5,13 +5,17 @@ import {StoreCreateDto} from './dto/create-store.dto';
 import {StoreEntity} from './entities/store.entity';
 import {createResponse} from '../utils/createResponse';
 import {UserEntity} from "../user/entities/user.entity";
+import {StoreRes} from "../../types/store/store";
+import {createAuthHeadersFromStoreCredentials} from "../utils/createAuthHeadersFromStoreCredentials";
+import {v4 as uuid} from "uuid";
+import {getToken} from "../utils/furgonetkaGetToken.utils";
 
 @Injectable()
 export class StoreService {
     constructor(private dataSource: DataSource) {
     }
 
-    async create(storeCreateDto: StoreCreateDto, userId) {
+    async create(storeCreateDto: StoreCreateDto, userUuid) {
         const {
             name,
             url,
@@ -32,16 +36,29 @@ export class StoreService {
             );
         }
 
-        const user = await UserEntity.findOneBy({id: userId})
+        const furgonetka_access_token = await getToken()
+        const user = await UserEntity.findOneBy({uuid: userUuid})
 
         const store = new StoreEntity();
+        store.uuid = uuid();
         store.url = url;
         store.name = name;
         store.consumer_secret = consumer_secret;
         store.consumer_key = consumer_key;
-        store.userProfile = user;
+        store.user_uuid = user.uuid;
+        store.furgonetka_access_token = furgonetka_access_token;
         await store.save();
         return createResponse(true, `Pomyślnie skonfigurowano sklep`, 200);
+    }
+
+    public async getStore(user_uuid: string): Promise<StoreRes> {
+        const store = await StoreEntity.findOneBy({user_uuid})
+        const headers = createAuthHeadersFromStoreCredentials(store.consumer_key, store.consumer_secret);
+        return {
+            store_url: store.url,
+            headers,
+            furgonetka_access_token: store.furgonetka_access_token,
+        }
     }
 
 }

@@ -18,6 +18,6 @@ export class StoreController {
         @Body() createStoreDto: StoreCreateDto,
         @UserObj() user: UserEntity
     ) {
-        return this.storeService.create(createStoreDto, user.id);
+        return this.storeService.create(createStoreDto, user.uuid);
     }
 }

@@ -1,3 +1,4 @@
+
 export interface StoreCreate {
     name: string;
     url: string;
@@ -6,14 +7,16 @@ export interface StoreCreate {
 }
 
 export interface StoreProfile extends StoreCreate {
-    id: string;
+    id: number;
+    uuid: string;
+    furgonetka_access_token: string;
 }
 
 
 export interface StoreProfileRes {
-    id: string;
-    name: string;
-    url: string;
+    store_url: string;
+    headers: any;
+    furgonetka_access_token: string;
 }
 
 export type StoreRes = StoreProfileRes
