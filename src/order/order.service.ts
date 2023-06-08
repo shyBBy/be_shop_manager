@@ -5,8 +5,6 @@ import axios from "axios";
 import {StoreService} from "../store/store.service";
 import {FurgonetkaService} from "../furgonetka/furgonetka.service";
 import {getTrackingNumberFromOrder} from "../utils/getTrackingNumberFromOrder";
-import {ORDER_STATUS} from "../../types/status/status";
-import {WooCommerce} from "../utils/woocommerce.utils";
 
 @Injectable()
 export class OrderService {
@@ -76,24 +74,25 @@ export class OrderService {
     async updateStatus(order_id: string, user_uuid) {
         const store = await this.storeService.getStore(user_uuid)
         const url = `${store.store_url}/wp-json/wc/v3/orders/${order_id}`
-        try {
-            const packageStatus = await this.getOneById(order_id, user_uuid)
-            const data = {
-                status: ORDER_STATUS.ZAMOWIENIE_WYSLANE
-            }
-            WooCommerce.put(`orders/${order_id}`, data)
-                .then((res) => {
-                    return res.data
-                })
-                .catch((e) => {
-                    console.log(e)
-                })
-            // const res = await axios.put(url,status, {headers: store.headers});
-            // return res
-        } catch (e){
-
-            throw e;
-        }
+        // try {
+        //     const packageStatus = await this.getOneById(order_id, user_uuid)
+        //     const data = {
+        //         status: ORDER_STATUS.ZAMOWIENIE_WYSLANE
+        //     }
+        //     WooCommerce.put(`orders/${order_id}`, data)
+        //         .then((res) => {
+        //             return res.data
+        //         })
+        //         .catch((e) => {
+        //             console.log(e)
+        //         })
+        //     // const res = await axios.put(url,status, {headers: store.headers});
+        //     // return res
+        // } catch (e){
+        //
+        //     throw e;
+        // }
+        return null
     }
 
 
