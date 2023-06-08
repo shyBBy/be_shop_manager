@@ -38,6 +38,6 @@ export class AuthService {
         //     })
         //     .json(userRes);
 
-        return res.json({token})
+        return {token}
     }
 }
