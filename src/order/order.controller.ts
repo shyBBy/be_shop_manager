@@ -24,14 +24,14 @@ export class OrderController {
         return this.orderService.getOneById(id, user.uuid)
     }
 
-    @Put('/status/:id')
-    @UseGuards(JwtAuthGuard)
-    updateStatus(
-        @Param('id') id: string,
-        @UserObj() user: UserEntity
-    ){
-        return this.orderService.updateStatus(id, user.uuid)
-    }
+    // @Put('/status/:id')
+    // @UseGuards(JwtAuthGuard)
+    // updateStatus(
+    //     @Param('id') id: string,
+    //     @UserObj() user: UserEntity
+    // ){
+    //     return this.orderService.updateStatus(id, user.uuid)
+    // }
 
 
 }
