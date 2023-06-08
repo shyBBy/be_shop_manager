@@ -26,16 +26,18 @@ export class AuthService {
     async login(user: UserEntity, res: Response) {
         const payload = {email: user.email};
         const token = sign(payload, process.env.JWT_SECRET, {expiresIn: '1d'});
-        const oneDay = 1000 * 60 * 60 * 24;
+        // const oneDay = 1000 * 60 * 60 * 24;
 
-        const userRes = await this.userService.getMe(user);
-        return res
-            .cookie('jwt', token, {
-                secure: Boolean(process.env.JWT_COOKIE_SECURE),
-                domain: process.env.JWT_COOKIE_DOMAIN,
-                httpOnly: Boolean(process.env.JWT_HTTP_ONLY),
-                maxAge: oneDay,
-            })
-            .json(userRes);
+        // const userRes = await this.userService.getMe(user);
+        // return res
+        //     .cookie('jwt', token, {
+        //         secure: Boolean(process.env.JWT_COOKIE_SECURE),
+        //         domain: process.env.JWT_COOKIE_DOMAIN,
+        //         httpOnly: Boolean(process.env.JWT_HTTP_ONLY),
+        //         maxAge: oneDay,
+        //     })
+        //     .json(userRes);
+
+        return res.json({token})
     }
 }
