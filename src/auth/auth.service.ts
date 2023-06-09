@@ -5,6 +5,7 @@ import {hashPwd} from '../utils/password.utils';
 import {UserService} from '../user/user.service';
 import {DataSource} from 'typeorm';
 import {Response} from 'express';
+import {createResponse} from "../utils/createResponse";
 
 @Injectable()
 export class AuthService {
@@ -38,6 +39,8 @@ export class AuthService {
         //     })
         //     .json(userRes);
 
-        return {token}
+
+
+        return res.json(createResponse(true, `Pomyślnie zalogowano`, 200, token))
     }
 }
