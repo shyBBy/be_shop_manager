@@ -27,6 +27,15 @@ export class AuthService {
         const payload = { email: user.email };
         const token = sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-        return res.json(createResponse(true, 'Pomyślnie zalogowano', 200, { token }));
+        const response = {
+            isSuccess: true,
+            message: `Pomyślnie zalogowano`,
+            statusCode: 200,
+            data: {
+                token: token
+            }
+        }
+
+        return res.json(response);
     }
 }
