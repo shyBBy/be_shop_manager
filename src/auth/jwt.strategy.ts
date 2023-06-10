@@ -1,6 +1,7 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {PassportStrategy} from '@nestjs/passport';
 import {ExtractJwt, Strategy} from 'passport-jwt';
+import {AuthService} from "./auth.service";
 
 export interface JwtPayload {
     email: string;
@@ -9,7 +10,9 @@ export interface JwtPayload {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor() {
+    constructor(
+        private authService: AuthService,
+    ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKey: process.env.JWT_SECRET,
@@ -17,6 +20,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: JwtPayload) {
+        const { email } = payload;
+
+        // Dodaj logikę sprawdzania unieważnionych tokenów tutaj
+        const isTokenValid = await this.authService.isTokenValid(email);
+        if (!isTokenValid) {
+            throw new UnauthorizedException('Token has been invalidated');
+        }
+
         return payload;
     }
 }

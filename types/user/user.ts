@@ -8,12 +8,10 @@ export interface UserProfile extends UserCreate {
     uuid: string;
 }
 
-
 export interface UserProfileRes {
     id: number;
     uuid: string;
     email: string;
 }
 
-export type UserRes = UserProfileRes
-
+export type UserRes = UserProfileRes;

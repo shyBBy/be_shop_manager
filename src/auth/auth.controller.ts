@@ -16,6 +16,12 @@ export class AuthController {
     return this.authService.login(user, res);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  async logout(@UserObj() user: UserEntity) {
+    console.log(user)
+    return this.authService.logout(user);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('/checklogin')
