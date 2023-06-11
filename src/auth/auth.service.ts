@@ -36,7 +36,9 @@ export class AuthService {
             message: `Pomyślnie zalogowano`,
             statusCode: 200,
             data: {
-                token: token
+                token,
+                email: user.email,
+                uuid: user.uuid
             }
         }
 
