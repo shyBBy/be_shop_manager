@@ -38,7 +38,7 @@ export class AuthService {
             data: {
                 token,
                 email: user.email,
-                uuid: user.uuid
+                uuid: updateUser.uuid,
             }
         }
 
