@@ -66,6 +66,7 @@ export class UserService {
       id: selectedUser.id,
       uuid: selectedUser.uuid,
       email: selectedUser.email,
+      active_store: selectedUser.active_store,
 
     };
   }
