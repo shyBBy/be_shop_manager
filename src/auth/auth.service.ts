@@ -39,6 +39,7 @@ export class AuthService {
                 token,
                 email: user.email,
                 uuid: updateUser.uuid,
+                store: updateUser.active_store,
             }
         }
 

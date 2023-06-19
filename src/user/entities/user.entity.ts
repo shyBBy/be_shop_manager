@@ -28,5 +28,10 @@ export class UserEntity extends BaseEntity {
         default: false,
     })
     isTokenValid: boolean;
+    
+    @Column({
+      default: false,
+    })
+    active_store: boolean;
 
 }

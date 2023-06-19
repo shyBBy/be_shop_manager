@@ -48,6 +48,8 @@ export class StoreService {
         store.user_uuid = user.uuid;
         store.furgonetka_access_token = furgonetka_access_token;
         await store.save();
+        user.active_store = true;
+        await user.save();
         return createResponse(true, `Pomyślnie skonfigurowano sklep`, 200);
     }
 

@@ -41,6 +41,7 @@ export class UserService {
       user.uuid = uuid();
       user.email = email;
       user.password = hashPwd(password);
+      user.active_store = false;
       await user.save();
       return createResponse(true, 'Pomyślnie utworzono konto', 200);
     } catch (e) {
