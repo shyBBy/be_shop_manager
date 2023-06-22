@@ -1,4 +1,5 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {UserEntity} from "../../user/entities/user.entity";
+import {BaseEntity, Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity({
     database: process.env.DB_DATABASE,
@@ -46,4 +47,6 @@ export class StoreEntity extends BaseEntity {
     })
     furgonetka_access_token: string;
 
+    // @OneToOne(() => UserEntity, (user) => user.store)
+    // user: UserEntity;
 }

@@ -8,6 +8,10 @@ export interface JwtPayload {
     email: string;
 }
 
+function cookieExtractor(req: any): null | string {
+    return req && req.cookies ? req.cookies?.jwt ?? null : null;
+}
+
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,23 +20,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         private userService: UserService,
     ) {
         super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            jwtFromRequest: cookieExtractor,
             secretOrKey: process.env.JWT_SECRET,
         });
     }
 
     async validate(payload: JwtPayload, done: VerifiedCallback) {
-        const { email } = payload;
-
-        const user = await this.userService.getByEmail(email);
+        const user = await this.userService.getByEmail(payload.email);
         if (!user) {
             return done(new UnauthorizedException(), false);
         }
-        const isTokenValid = await this.authService.isTokenValid(email);
-        if (!isTokenValid) {
-            throw new UnauthorizedException('Token has been invalidated');
-        }
-
-        return payload;
+        return done(null, user);
     }
 }

@@ -1,4 +1,4 @@
-import {Body, Controller, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 import {StoreService} from './store.service';
 import {StoreCreateDto} from "./dto/create-store.dto";
 import {UserObj} from "../decorators/user-object.decorator";
@@ -11,7 +11,6 @@ export class StoreController {
 
     }
 
-
     @Post('/create')
     @UseGuards(JwtAuthGuard)
     create(
@@ -19,5 +18,11 @@ export class StoreController {
         @UserObj() user: UserEntity
     ) {
         return this.storeService.create(createStoreDto, user.uuid);
+    }
+
+    @Get('/:id')
+    @UseGuards(JwtAuthGuard)
+    getOneById(@Param('id') id: string) {
+        return this.storeService.getOneById(id);
     }
 }

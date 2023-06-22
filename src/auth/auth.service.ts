@@ -26,29 +26,28 @@ export class AuthService {
     async login(user: UserEntity, res: Response) {
         const payload = {email: user.email};
         const token = sign(payload, process.env.JWT_SECRET, {expiresIn: '1d'});
+        const oneDay = 1000 * 60 * 60 * 24;
 
-        const updateUser = await this.userService.getByEmail(user.email)
-        updateUser.isTokenValid = true
-        await updateUser.save();
-
-        const response = {
-            isSuccess: true,
-            message: `Pomyślnie zalogowano`,
-            statusCode: 200,
-            data: {
-                token,
-                email: user.email,
-                uuid: updateUser.uuid,
-                store: updateUser.active_store,
-            }
-        }
-
-        return res.json(response);
+        const userRes = await this.userService.getMe(user);
+        return res
+            .cookie('jwt', token, {
+                secure: Boolean(process.env.JWT_COOKIE_SECURE),
+                domain: process.env.JWT_COOKIE_DOMAIN,
+                httpOnly: Boolean(process.env.JWT_HTTP_ONLY),
+                maxAge: oneDay,
+            })
+            .json(userRes);
     }
 
-    async logout(user: UserEntity) {
-        // Unieważnienie tokenu użytkownika (np. zapisanie go do bazy danych jako unieważnionego)
-        await this.invalidateToken(user.email);
+    logout(res: Response, responseObj?: { statusCode: number; message: string }) {
+        const resObj = responseObj ?? {message: 'Logout was successful'};
+        return res
+            .clearCookie('jwt', {
+                secure: Boolean(process.env.JWT_COOKIE_SECURE),
+                domain: process.env.JWT_COOKIE_DOMAIN,
+                httpOnly: Boolean(process.env.JWT_HTTP_ONLY),
+            })
+            .json(resObj);
     }
 
     async isTokenValid(email: string): Promise<boolean> {

@@ -18,8 +18,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
-  async logout(@UserObj() user: UserEntity) {
-    return this.authService.logout(user);
+  async logout(@Res() res: Response) {
+    return this.authService.logout(res);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -15,7 +15,7 @@ export class StoreService {
     constructor(private dataSource: DataSource) {
     }
 
-    async create(storeCreateDto: StoreCreateDto, userUuid) {
+    async create(storeCreateDto: StoreCreateDto, user_uuid) {
         const {
             name,
             url,
@@ -37,7 +37,7 @@ export class StoreService {
         }
 
         const furgonetka_access_token = await getToken()
-        const user = await UserEntity.findOneBy({uuid: userUuid})
+        const user = await UserEntity.findOneBy({uuid: user_uuid})
 
         const store = new StoreEntity();
         store.uuid = uuid();
@@ -45,11 +45,10 @@ export class StoreService {
         store.name = name;
         store.consumer_secret = consumer_secret;
         store.consumer_key = consumer_key;
+        // store.user = user;
         store.user_uuid = user.uuid;
         store.furgonetka_access_token = furgonetka_access_token;
         await store.save();
-        user.active_store = true;
-        await user.save();
         return createResponse(true, `Pomyślnie skonfigurowano sklep`, 200);
     }
 
@@ -60,6 +59,14 @@ export class StoreService {
             store_url: store.url,
             headers,
             furgonetka_access_token: store.furgonetka_access_token,
+        }
+    }
+
+    async getOneById(user_uuid: string): Promise<any> {
+        const store = await StoreEntity.findOneBy({user_uuid})
+        return {
+            store_url: store.url,
+            store_name: store.name,
         }
     }
 
