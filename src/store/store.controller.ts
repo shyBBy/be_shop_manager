@@ -16,7 +16,7 @@ export class StoreController {
         return this.storeService.create(createStoreDto, user.id);
     }
 
-    @Get('/test')
+    @Get('/byuserid')
     @UseGuards(JwtAuthGuard)
     getOneByUserId(@UserObj() user: UserEntity) {
         return this.storeService.getStoreByUserId(user.id);
