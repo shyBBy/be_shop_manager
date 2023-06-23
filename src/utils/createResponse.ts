@@ -19,7 +19,6 @@
 //   };
 // };
 
-
 // interface ResponseData {
 //   message: string;
 //   isSuccess: boolean;
@@ -49,10 +48,10 @@ interface ResponseData {
 }
 
 export const createResponse = (
-    isSuccess: boolean,
-    message: string,
-    statusCode: number,
-    data?: any,
+  isSuccess: boolean,
+  message: string,
+  statusCode: number,
+  data?: any,
 ) => {
   return {
     isSuccess,

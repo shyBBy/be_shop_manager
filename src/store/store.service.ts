@@ -4,25 +4,17 @@ import {DataSource} from 'typeorm';
 import {StoreCreateDto} from './dto/create-store.dto';
 import {StoreEntity} from './entities/store.entity';
 import {createResponse} from '../utils/createResponse';
-import {UserEntity} from "../user/entities/user.entity";
-import {StoreRes} from "../../types/store/store";
+import {UserEntity} from '../user/entities/user.entity';
+import {getToken} from '../utils/furgonetkaGetToken.utils';
 import {createAuthHeadersFromStoreCredentials} from "../utils/createAuthHeadersFromStoreCredentials";
-import {v4 as uuid} from "uuid";
-import {getToken} from "../utils/furgonetkaGetToken.utils";
 
 @Injectable()
 export class StoreService {
     constructor(private dataSource: DataSource) {
     }
 
-    async create(storeCreateDto: StoreCreateDto, user_uuid) {
-        const {
-            name,
-            url,
-            consumer_key,
-            consumer_secret,
-        } = storeCreateDto;
-
+    async create(storeCreateDto: StoreCreateDto, id) {
+        const {name, url, consumer_key, consumer_secret} = storeCreateDto;
 
         const isStoreExist = await StoreEntity.findOneBy({url});
 
@@ -36,24 +28,23 @@ export class StoreService {
             );
         }
 
-        const furgonetka_access_token = await getToken()
-        const user = await UserEntity.findOneBy({uuid: user_uuid})
+        const furgonetka_access_token = await getToken();
+        const user = await UserEntity.findOneBy({id});
 
         const store = new StoreEntity();
-        store.uuid = uuid();
         store.url = url;
         store.name = name;
         store.consumer_secret = consumer_secret;
         store.consumer_key = consumer_key;
-        // store.user = user;
-        store.user_uuid = user.uuid;
+        store.user_profile = user;
         store.furgonetka_access_token = furgonetka_access_token;
         await store.save();
         return createResponse(true, `Pomyślnie skonfigurowano sklep`, 200);
     }
 
-    public async getStore(user_uuid: string): Promise<StoreRes> {
-        const store = await StoreEntity.findOneBy({user_uuid})
+    public async getStoreByUserId(user_id: string): Promise<any> {
+        const user = await UserEntity.findOneBy({id: user_id})
+        const store = user.store
         const headers = createAuthHeadersFromStoreCredentials(store.consumer_key, store.consumer_secret);
         return {
             store_url: store.url,
@@ -62,8 +53,8 @@ export class StoreService {
         }
     }
 
-    async getOneById(user_uuid: string): Promise<any> {
-        const store = await StoreEntity.findOneBy({user_uuid})
+    async getOneById(id: string): Promise<any> {
+        const store = await StoreEntity.findOneBy({id})
         return {
             store_url: store.url,
             store_name: store.name,

@@ -3,10 +3,9 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-    app.use(cookieParser());
+  app.use(cookieParser());
 
   app.enableCors({
     origin: process.env.CORS_ORIGIN_DOMAIN,
@@ -16,7 +15,6 @@ async function bootstrap() {
   });
 
   dotenv.config();
-  
 
   await app.listen(3002);
 }

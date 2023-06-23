@@ -1,19 +1,13 @@
-import {BaseEntity, Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
-import { StoreEntity } from '../../store/entities/store.entity';
+import {BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import {StoreEntity} from '../../store/entities/store.entity';
 
 @Entity({
     database: process.env.DB_DATABASE,
     name: 'user',
 })
 export class UserEntity extends BaseEntity {
-
-    @PrimaryGeneratedColumn('increment')
-    id: number;
-
-    @Column({
-        default: '',
-    })
-    uuid: string;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column({
         default: '',
@@ -25,17 +19,10 @@ export class UserEntity extends BaseEntity {
     })
     password: string;
 
-    @Column({
-        default: false,
+    @OneToOne(() => StoreEntity, store => store.user_profile, {
+        eager: true,
     })
-    isTokenValid: boolean;
-
-    @Column({
-        default: false,
-    })
-    active_store: boolean;
-
-    // @OneToOne(() => StoreEntity, (store) => store.user)
-    // store: StoreEntity;
+    @JoinColumn()
+    store: StoreEntity;
 
 }

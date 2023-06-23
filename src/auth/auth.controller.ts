@@ -1,10 +1,10 @@
-import {Controller, Get, Post, Res, Req, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Res, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { UserObj } from '../decorators/user-object.decorator';
 import { UserEntity } from '../user/entities/user.entity';
-import {LocalAuthGuard} from "../guards/local-auth.guard";
-import {JwtAuthGuard} from "../guards/jwt-auth.guard";
+import { LocalAuthGuard } from '../guards/local-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -25,6 +25,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('/checklogin')
   check() {
-    return {test: 'jestem zalogowany'}
+    return { test: 'jestem zalogowany' };
   }
 }
