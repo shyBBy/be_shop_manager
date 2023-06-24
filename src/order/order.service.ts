@@ -22,7 +22,10 @@ export class OrderService {
 
       try {
           const res = await axios.get(url, {
-              headers: store.headers
+              headers: store.headers,
+              params: {
+                  per_page: 20,
+              },
           });
           const orders = res.data || [];
           console.log(orders.meta_data)
