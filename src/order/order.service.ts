@@ -5,6 +5,10 @@ import axios from 'axios';
 import {StoreService} from '../store/store.service';
 import {FurgonetkaService} from '../furgonetka/furgonetka.service';
 import {getTrackingNumberFromOrder} from '../utils/getTrackingNumberFromOrder';
+import {checkIsShippingCreatedAndStatus} from "../utils/checkIsShippingCreatedAndStatus";
+import {OrderEntity} from "./entities/order.entity";
+import {MailerService} from "@nestjs-modules/mailer";
+import {mailTemplate} from "../utils/mailTemplate";
 
 @Injectable()
 export class OrderService {
@@ -12,6 +16,7 @@ export class OrderService {
         private dataSource: DataSource,
         private storeService: StoreService,
         private furgonetkaService: FurgonetkaService,
+        private readonly mailerService: MailerService,
     ) {
     }
 
@@ -45,6 +50,7 @@ export class OrderService {
 
     }
 
+
     async getOneById(order_id, user_uuid): Promise<any> {
         const store = await this.storeService.getStoreByUserId(user_uuid)
         const url = `${store.store_url}/wp-json/wc/v3/orders/${order_id}`
@@ -59,6 +65,32 @@ export class OrderService {
 
                 const shippingTrackingHistory = await this.furgonetkaService.getShippingStatus(onePackage.package_id, store.furgonetka_access_token)
 
+                const isShippingCreated = checkIsShippingCreatedAndStatus(shippingTrackingHistory); //sprawdza jaki ma status = jesli jest wygenerowana paczka to zwroci true czyli umozliwi wyslanie powiadomienia e-mail
+
+                const isOrderExist = await OrderEntity.findOneBy({order_id}) //pobiera zamowienie z lokalnej bazy danych
+                if (!isOrderExist) { //jesli nie ma to tworzy nową encje w lokalnej bazie danych
+                    const order = await new OrderEntity()
+                    order.order_id = order_id;
+                    order.tracking_number = tracking_number;
+                    order.state_description = orderRes.status
+                    await order.save()
+                }
+
+                if (isShippingCreated && isOrderExist.notification_was_send === false) { //jesli paczka jest (true) oraz jesli e-mail nie byl wyslany (false) to powiadomienie zostanie wysłane
+                    const order = await OrderEntity.findOneBy({order_id})
+
+                    await this.mailerService.sendMail({
+                        // to: `${orderRes.billing.email}`,
+                        to: `bigsewciushop@gmail.com`,
+                        subject: 'Zamówienie z bigsewciu.shop zostało wysłane!',
+                        text: 'Zlokalizuj swoją przesyłkę',
+                        html: mailTemplate(onePackage.parcels[0].tracking_url),
+                    })
+                    await this.updateStatus(url, store.headers)
+                    order.notification_was_send = true
+                    await order.save()
+                }
+
                 const orderData = {
                     order: orderRes,
                     shipping: onePackage,
@@ -66,6 +98,7 @@ export class OrderService {
                 }
                 return orderData;
             }
+
             const orderData = {
                 order: orderRes,
                 shipping: null,
@@ -77,26 +110,16 @@ export class OrderService {
         }
     }
 
-    // async updateStatus(order_id: string, user_uuid) {
-    //     const store = await this.storeService.getStore(user_uuid)
-    //     const url = `${store.store_url}/wp-json/wc/v3/orders/${order_id}`
-    //     try {
-    //         const packageStatus = await this.getOneById(order_id, user_uuid)
-    //         const data = {
-    //             status: ORDER_STATUS.ZAMOWIENIE_WYSLANE
-    //         }
-    //         WooCommerce.put(`orders/${order_id}`, data)
-    //             .then((res) => {
-    //                 return res.data
-    //             })
-    //             .catch((e) => {
-    //                 console.log(e)
-    //             })
-    //         // const res = await axios.put(url,status, {headers: store.headers});
-    //         // return res
-    //     } catch (e){
-    //
-    //         throw e;
-    //     }
-    // }
+    async updateStatus(url: string, store_headers) {
+        try {
+            const data = {
+                status: 'in-transit'
+            }
+            const res = await axios.put(url, data, { headers: store_headers });
+
+        } catch (e){
+
+            throw e;
+        }
+    }
 }

@@ -11,6 +11,8 @@ import { StoreModule } from './store/store.module';
 import { StoreEntity } from './store/entities/store.entity';
 import { FurgonetkaModule } from './furgonetka/furgonetka.module';
 import {OrderEntity} from "./order/entities/order.entity";
+import {ScheduleModule} from "@nestjs/schedule";
+import {MailerModule} from "@nestjs-modules/mailer";
 
 @Module({
   imports: [
@@ -26,6 +28,20 @@ import {OrderEntity} from "./order/entities/order.entity";
       logging: Boolean(process.env.DB_LOGGING),
       synchronize: Boolean(process.env.DB_SYNCHRONIZE),
     }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.MAILER_HOST,
+        port: Number(process.env.MAILER_PORT),
+        auth: {
+          user: process.env.MAILER_USER,
+          pass: process.env.MAILER_PASSWORD,
+        },
+      },
+      defaults: {
+        from: process.env.MAILER_FROM,
+      },
+    }),
+    ScheduleModule.forRoot(),
     UserModule,
     AuthModule,
     OrderModule,

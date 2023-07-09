@@ -19,6 +19,12 @@ export class OrderEntity extends BaseEntity {
   order_id: string;
 
   @Column({
+    default: false,
+    type: Boolean
+  })
+  notification_was_send: boolean
+
+  @Column({
     default: '',
   })
   state_description: string; //STATUS PACZKI
