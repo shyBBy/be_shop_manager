@@ -89,7 +89,7 @@ export class OrderService {
                     await this.updateStatus(url, store.headers)
                     order.notification_was_send = true
                     await order.save()
-                }
+                
 
                 const orderData = {
                     order: orderRes,
@@ -97,6 +97,7 @@ export class OrderService {
                     shipping_tracking: shippingTrackingHistory
                 }
                 return orderData;
+            }
             }
 
             const orderData = {
