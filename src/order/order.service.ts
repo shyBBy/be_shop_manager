@@ -76,6 +76,16 @@ export class OrderService {
                     await order.save()
                 }
 
+// zrobić osobno zmiane statusu i wysyłkę e-mail. zrobić to tak, że sprawdza historię paczek i jeśli status jest rowny (i tu sprawdzić wszystkie statusy początkowe dot wysłania paczki u przewoźników ) 
+// to wtedy ustawia się odpowiedni status zamówienia i jest jego aktualizacja oraz wysyła się e-mail z linkiem. 
+// jesli status jest odebrany to wtedy zamowienie zmienia się na completed i można wysłać e-mail z podziekowaniem, prośbą o ocene sklepu czy coś 
+//
+// wykminic jakoś aby to samo się sprawdzalo i odświeżalo w tle 
+//
+
+
+
+
                 if (isShippingCreated && isOrderExist.notification_was_send === false) { //jesli paczka jest (true) oraz jesli e-mail nie byl wyslany (false) to powiadomienie zostanie wysłane
                     const order = await OrderEntity.findOneBy({order_id})
 
