@@ -20,6 +20,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
+      console.log('validateUser')
     const user = await this.userService.getByEmail(email);
     if (user && user.password === hashPwd(password)) {
       return user;
