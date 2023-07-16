@@ -12,15 +12,13 @@ export class OrderController {
   @Get('/list')
   @UseGuards(JwtAuthGuard)
   getAll(@UserObj() user: UserEntity): Promise<GetListOfAllOrdersResponse> {
-      return this.orderService.getAllOrders(user.id)
+    return this.orderService.getAllOrders(user.id);
   }
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
-  getOneById(
-      @Param('id') id: string,
-      @UserObj() user: UserEntity) {
-      return this.orderService.getOneById(id, user.id)
+  getOneById(@Param('id') id: string, @UserObj() user: UserEntity) {
+    return this.orderService.getOneById(id, user.id);
   }
 
   // @Put('/status/:id')

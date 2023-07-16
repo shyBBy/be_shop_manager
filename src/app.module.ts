@@ -10,9 +10,10 @@ import { OrderModule } from './order/order.module';
 import { StoreModule } from './store/store.module';
 import { StoreEntity } from './store/entities/store.entity';
 import { FurgonetkaModule } from './furgonetka/furgonetka.module';
-import {OrderEntity} from "./order/entities/order.entity";
-import {ScheduleModule} from "@nestjs/schedule";
-import {MailerModule} from "@nestjs-modules/mailer";
+import { OrderEntity } from './order/entities/order.entity';
+import { ScheduleModule } from '@nestjs/schedule';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { StatusModule } from './status/status.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import {MailerModule} from "@nestjs-modules/mailer";
     OrderModule,
     StoreModule,
     FurgonetkaModule,
+    StatusModule,
   ],
   controllers: [AppController],
   providers: [AppService],

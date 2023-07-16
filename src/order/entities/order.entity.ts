@@ -20,9 +20,9 @@ export class OrderEntity extends BaseEntity {
 
   @Column({
     default: false,
-    type: Boolean
+    type: Boolean,
   })
-  notification_was_send: boolean
+  notification_was_send: boolean;
 
   @Column({
     default: '',

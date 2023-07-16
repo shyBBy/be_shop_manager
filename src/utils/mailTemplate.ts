@@ -1,7 +1,5 @@
-
-
 export const mailTemplate = (tracking_url: any) => {
-    const template = `
+  const template = `
         <html>
            <head>
                 <meta charset="UTF-8" />
@@ -19,6 +17,6 @@ export const mailTemplate = (tracking_url: any) => {
             <p>Zespół Obsługi Klienta BIGSEWCIU.SHOP</p>
           </body>
         </html>
-    `
-    return template
-}
+    `;
+  return template;
+};

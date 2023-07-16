@@ -47,6 +47,4 @@ export class FurgonetkaService {
             return null;
         }
     }
-
-
 }
