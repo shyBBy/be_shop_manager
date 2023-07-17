@@ -70,14 +70,19 @@ export class StatusService {
             const tracking_number = await getTrackingNumberFromOrder(order);
             const shipping = await this.furgonetkaService.getPackage(tracking_number, process.env.FURGONETKA_ACCES_TOKEN);
             if (shipping.parcels[0].state === 'collected' || shipping.parcels[0].state === 'transit') {
-                // const isOrderExist = await OrderEntity.findOneBy({order_id: order.id})
-                // if (!isOrderExist) { //jesli nie ma to tworzy nową encje w lokalnej bazie danych
-                //     const order = await new OrderEntity()
-                //     order.order_id = order.id;
-                //     order.tracking_number = tracking_number;
-                //     order.state_description = orderRes.status
-                //     await order.save()
-                // }
+                const isOrderExist = await OrderEntity.findOneBy({order_id: order.id})
+                if (!isOrderExist) { //jesli nie ma to tworzy nową encje w lokalnej bazie danych
+                    const newOrder = await new OrderEntity()
+                    newOrder.order_id = order.id;
+                    newOrder.tracking_number = tracking_number;
+                    newOrder.state_description = order.status
+                    await newOrder.save()
+                    //tutaj wysylka e-mail
+                    
+                    
+                }
+                
+               
                 // console.log(isOrderExist)
                 await updateStatus(url, 'in-transit')
                 ordersWithSendStatus.push(order)
