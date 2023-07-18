@@ -6,7 +6,8 @@ import {FurgonetkaService} from "../furgonetka/furgonetka.service";
 import {updateStatus} from "../utils/updateStatus";
 import {MailerService} from "@nestjs-modules/mailer";
 import {Cron, CronExpression} from "@nestjs/schedule";
-
+import {OrderEntity} from "../order/entities/order.entity";
+import {mailTemplate} from "../utils/mailTemplate";
 
 
 @Injectable()
@@ -69,28 +70,33 @@ export class StatusService {
             const url = `${process.env.STORE_URL}/wp-json/wc/v3/orders/${order.id}`;
             const tracking_number = await getTrackingNumberFromOrder(order);
             const shipping = await this.furgonetkaService.getPackage(tracking_number, process.env.FURGONETKA_ACCES_TOKEN);
+            const isOrderExist = await OrderEntity.findOneBy({order_id: order.id})
+            if (!isOrderExist) { //jesli nie ma to tworzy nową encje w lokalnej bazie danych
+                const newOrder = await new OrderEntity()
+                newOrder.order_id = order.id;
+                newOrder.tracking_number = tracking_number;
+                newOrder.state_description = order.status
+                await newOrder.save()
+            }
             if (shipping.parcels[0].state === 'collected' || shipping.parcels[0].state === 'transit') {
-                const isOrderExist = await OrderEntity.findOneBy({order_id: order.id})
-                if (!isOrderExist) { //jesli nie ma to tworzy nową encje w lokalnej bazie danych
-                    const newOrder = await new OrderEntity()
-                    newOrder.order_id = order.id;
-                    newOrder.tracking_number = tracking_number;
-                    newOrder.state_description = order.status
-                    await newOrder.save()
-                    //tutaj wysylka e-mail
-                    
-                    
+                const checkOrder = await OrderEntity.findOneBy({order_id: order.id})
+                if (!checkOrder.notification_was_send) {
+                        await this.mailerService.sendMail({
+                            to: `${order.billing.email}`,
+                            subject: 'Zamówienie z bigsewciu.shop zostało wysłane!',
+                            text: 'Zlokalizuj swoją przesyłkę',
+                            html: mailTemplate(shipping.parcels[0].tracking_url, order),
+                        })
+                    checkOrder.notification_was_send = true;
+                    await checkOrder.save()
                 }
-                
-               
-                // console.log(isOrderExist)
                 await updateStatus(url, 'in-transit')
                 ordersWithSendStatus.push(order)
             } else if (shipping.parcels[0].state === 'delivered') {
                 await updateStatus(url, 'completed')
                 ordersWithDeliveredStatus.push(order)
             } else {
-                console.log(`coś nie tak z: ${order.id}`)
+                console.log('')
             }
         }
 
