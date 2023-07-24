@@ -5,6 +5,6 @@ import { FurgonetkaController } from './furgonetka.controller';
 @Module({
   controllers: [FurgonetkaController],
   providers: [FurgonetkaService],
-  exports: [FurgonetkaService]
+  exports: [FurgonetkaService],
 })
 export class FurgonetkaModule {}

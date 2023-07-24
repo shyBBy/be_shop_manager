@@ -3,6 +3,5 @@ export const woocommerceapi = {
     getAll: '/wp-json/wc/v3/orders',
     getOne: '/wp-json/wc/v3/orders/',
     create: '',
- 
-  }
-}
+  },
+};

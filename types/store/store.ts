@@ -7,8 +7,7 @@ export interface StoreCreate {
 }
 
 export interface StoreProfile extends StoreCreate {
-    id: number;
-    uuid: string;
+    id: string;
     furgonetka_access_token: string;
 }
 

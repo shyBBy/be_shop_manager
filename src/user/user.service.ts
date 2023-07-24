@@ -10,7 +10,6 @@ import { AuthService } from '../auth/auth.service';
 import { UserCreateDto } from './dto/create-user.dto';
 import { createResponse } from '../utils/createResponse';
 import { UserEntity } from './entities/user.entity';
-import { v4 as uuid } from 'uuid';
 import { hashPwd } from '../utils/password.utils';
 import { UserRes } from '../../types/user/user';
 
@@ -38,7 +37,6 @@ export class UserService {
 
     try {
       const user = new UserEntity();
-      user.uuid = uuid();
       user.email = email;
       user.password = hashPwd(password);
       await user.save();
@@ -56,23 +54,40 @@ export class UserService {
 
   async getMe(user: UserEntity): Promise<UserRes> {
     const selectedUser = await this.dataSource
-      .createQueryBuilder()
-      .select('user')
-      .from(UserEntity, 'user')
+      .createQueryBuilder(UserEntity, 'user')
+      .select(['user.id', 'user.email'])
+      .leftJoinAndSelect('user.store', 'store')
+      .addSelect(['store.id', 'store.name', 'store.url'])
       .where({ email: user.email })
       .getOne();
+
+    let storeData = null;
+    if (selectedUser.store) {
+      storeData = {
+        id: selectedUser.store.id,
+        name: selectedUser.store.name,
+        url: selectedUser.store.url,
+      };
+    }
+
     return {
       id: selectedUser.id,
-      uuid: selectedUser.uuid,
       email: selectedUser.email,
-
+      store: storeData,
     };
+
+    // return {
+    //     id: selectedUser.id,
+    //     email: selectedUser.email,
+    //     store: selectedUser.store ? {
+    //         id: selectedUser.store.id,
+    //         name: selectedUser.store.name,
+    //         url: selectedUser.store.url,
+    //     } : null,
+    // };
   }
 
   async getByEmail(email: string): Promise<UserEntity | null> {
     return await UserEntity.findOneBy({ email });
   }
-
-
-  //END - LAST SIGN
 }

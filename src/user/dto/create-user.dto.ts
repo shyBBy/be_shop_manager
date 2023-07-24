@@ -10,4 +10,3 @@ export class UserCreateDto implements UserCreate {
   @IsNotEmpty()
   password: string;
 }
-
