@@ -14,6 +14,7 @@ import { OrderEntity } from './order/entities/order.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { StatusModule } from './status/status.module';
+import { RefundModule } from './refund/refund.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { StatusModule } from './status/status.module';
     StoreModule,
     FurgonetkaModule,
     StatusModule,
+    RefundModule,
   ],
   controllers: [AppController],
   providers: [AppService],
