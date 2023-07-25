@@ -15,6 +15,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { StatusModule } from './status/status.module';
 import { RefundModule } from './refund/refund.module';
+import {RefundEntity} from "./refund/entities/refund.entity";
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { RefundModule } from './refund/refund.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [UserEntity, StoreEntity, OrderEntity],
+      entities: [UserEntity, StoreEntity, OrderEntity, RefundEntity],
       bigNumberStrings: Boolean(process.env.DB_BIG_NUMBER_STRINGS),
       logging: Boolean(process.env.DB_LOGGING),
       synchronize: Boolean(process.env.DB_SYNCHRONIZE),
