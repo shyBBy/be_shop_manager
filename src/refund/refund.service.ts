@@ -46,6 +46,7 @@ export class RefundService {
             })
             return createResponse(true, `Pomyślnie utworzono zwrot, sprawdź skrzynkę pocztową: ${email}`, 200)
         } catch (e) {
+          console.log('error z service', e)
             throw new HttpException(
                 {
                     message: `Coś poszło nie tak, spróbuj później.`,
