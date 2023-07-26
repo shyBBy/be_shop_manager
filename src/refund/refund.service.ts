@@ -38,12 +38,12 @@ export class RefundService {
             refund.status = 'Nowe'
             refund.uuid = refundUuid
             await refund.save();
-            await this.mailerService.sendMail({
+            /*await this.mailerService.sendMail({
                 to: `${email}`,
                 subject: 'Potwierdzenie złożenia reklamacji produktu',
                 text: 'Potwierdzenie złożenia reklamacji produktu',
                 html: refundCreatedMailTemplate(refundCreateDto, refundUuid),
-            })
+            })*/
             return createResponse(true, `Pomyślnie utworzono zwrot, sprawdź skrzynkę pocztową: ${email}`, 200)
         } catch (e) {
           console.log('error z service', e)
