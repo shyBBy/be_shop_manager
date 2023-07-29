@@ -115,7 +115,7 @@ export class RefundService {
 
         try {
             const refunds = await RefundEntity.find({
-                order: { createdAt: 'DESC' }, // Sortowanie wyników po dacie dodania w odwrotnej kolejności (najnowsze na samej górze)
+                order: { id: 'DESC' }, // Sortowanie wyników po numerze ID w odwrotnej kolejności (największe ID na samej górze)
             });
             return refunds
         } catch (e) {
