@@ -28,20 +28,21 @@ export class RefundController {
         return this.refundService.updateRefundData(updateRefundDto, user, uuid)
     }
 
+    @Get('/list')
+    @UseGuards(JwtAuthGuard)
+    getAll(@UserObj() user: UserEntity): Promise<GetListOfAllRefundsResponse> {
+        return  this.refundService.getAllRefunds(user.id);
+    }
+
     @Get('/:uuid')
     getOneById(@Param('uuid') uuid: string) {
         return this.refundService.getOneByUuid(uuid);
     }
 
-    @Get('/list')
-    @UseGuards(JwtAuthGuard)
-    getAll(@UserObj() user: UserEntity): Promise<GetListOfAllRefundsResponse> {
-        return this.refundService.getAllRefunds(user.id);
-    }
 
     @Delete('/:id')
     @UseGuards(JwtAuthGuard)
     async remove(@Param('id') id: string, @UserObj() user: UserEntity): Promise<void> {
-        return this.refundService.removeOneByUuid(id, user.id);
+        return await this.refundService.removeOneByUuid(id, user.id);
     }
 }

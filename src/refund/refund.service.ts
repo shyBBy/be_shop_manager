@@ -114,7 +114,7 @@ export class RefundService {
     async getAllRefunds(userId: string): Promise<GetListOfAllRefundsResponse> {
 
         try {
-            const refunds = await RefundEntity.find()
+            const refunds =  await RefundEntity.find()
             return refunds
         } catch (e) {
             throw new HttpException(
