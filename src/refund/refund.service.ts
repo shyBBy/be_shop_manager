@@ -1,6 +1,5 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable, NotFoundException} from '@nestjs/common';
 import {DataSource} from "typeorm";
-import {RefundCreateDto} from "./dto/create-refund.dto";
 import {RefundEntity} from "./entities/refund.entity";
 import {MailerService} from "@nestjs-modules/mailer";
 import {refundCreatedMailTemplate} from "../utils/refundCreatedMailTemplate";
@@ -10,6 +9,8 @@ import {UserEntity} from "../user/entities/user.entity";
 import {RefundUpdateDto} from "./dto/update-refund.dto";
 import {refundUpdateSuccessMailTemplate} from "../utils/refundUpdateSuccessMailTemplate";
 import {refundUpdateRejectMailTemplate} from "../utils/refundUpdateRejectMailTemplate";
+import {RefundCreateDto} from "./dto/create-refund.dto";
+import {GetListOfAllRefundsResponse} from "../../types/refund/refund";
 
 
 @Injectable()
@@ -17,21 +18,22 @@ export class RefundService {
     constructor(
         private dataSource: DataSource,
         private readonly mailerService: MailerService
-    ) {}
+    ) {
+    }
 
 
     async create(refundCreateDto: RefundCreateDto) {
         const {email, receiptOrInvoiceNumber, productCode, productTitle, reason, description, orderId} = refundCreateDto
-        
-        const isExistRefund = await RefundEntity.findOmeBy({orderId})
-        if(isExistRefund) {
-          throw new HttpException(
-        {
-          message: `Zwrot dotyczący zamówienia nr: ${orderId} został zgłoszony.`,
-          isSuccess: false,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+
+        const isExistRefund = await RefundEntity.findOneBy({orderId})
+        if (isExistRefund) {
+            throw new HttpException(
+                {
+                    message: `Zwrot dotyczący zamówienia nr: ${orderId} został zgłoszony.`,
+                    isSuccess: false,
+                },
+                HttpStatus.BAD_REQUEST,
+            );
         }
 
         try {
@@ -58,7 +60,7 @@ export class RefundService {
             })
             return createResponse(true, `Pomyślnie utworzono zwrot, sprawdź skrzynkę pocztową: ${email}`, 200)
         } catch (e) {
-          console.log('error z service', e)
+            console.log('error z service', e)
             throw new HttpException(
                 {
                     message: `Coś poszło nie tak, spróbuj później.`,
@@ -107,6 +109,34 @@ export class RefundService {
             console.log(e)
         }
 
+    }
+
+    async getAllRefunds(userId: string): Promise<GetListOfAllRefundsResponse> {
+
+        try {
+            const [refunds, totalEntitiesCount] = await RefundEntity.findAndCount({})
+            return refunds
+        } catch (e) {
+            throw new HttpException(
+                {
+                    message: `Cos poszlo nie tak, spróbuj raz jeszcze.`,
+                    isSuccess: false,
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
+    }
+
+
+    async removeOneByUuid(uuid: string, userId) {
+        const refund = await RefundEntity.findOneBy({uuid})
+
+        if (!refund) {
+            throw new NotFoundException(`Zwrot o takim uuid: ${uuid} nie istnieje`);
+        }
+
+        await refund.remove();
     }
 
 }

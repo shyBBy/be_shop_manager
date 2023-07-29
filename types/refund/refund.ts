@@ -1,6 +1,7 @@
 export interface RefundCreate {
     email: string;
     receiptOrInvoiceNumber: string;
+    orderId: string;
     productTitle: string;
     productCode: string;
     reason: string;
@@ -10,6 +11,7 @@ export interface RefundCreate {
 export interface RefundProfile extends RefundCreate {
     id: number;
     uuid: string;
+    orderId: string;
     status: string;
     createdAt: Date | string;
     updatedAt: Date | string;
@@ -17,3 +19,5 @@ export interface RefundProfile extends RefundCreate {
 }
 
 export type RefundRes = RefundProfile
+
+export type GetListOfAllRefundsResponse = RefundRes[]

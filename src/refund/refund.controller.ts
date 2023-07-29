@@ -1,10 +1,11 @@
-import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, UseGuards} from '@nestjs/common';
 import {RefundService} from './refund.service';
 import {RefundCreateDto} from "./dto/create-refund.dto";
 import {JwtAuthGuard} from "../guards/jwt-auth.guard";
 import {UserEntity} from "../user/entities/user.entity";
 import {UserObj} from "../decorators/user-object.decorator";
 import {RefundUpdateDto} from "./dto/update-refund.dto";
+import {GetListOfAllRefundsResponse} from "../../types/refund/refund";
 
 @Controller('refund')
 export class RefundController {
@@ -30,5 +31,17 @@ export class RefundController {
     @Get('/:uuid')
     getOneById(@Param('uuid') uuid: string) {
         return this.refundService.getOneByUuid(uuid);
+    }
+
+    @Get('/list')
+    @UseGuards(JwtAuthGuard)
+    getAll(@UserObj() user: UserEntity): Promise<GetListOfAllRefundsResponse> {
+        return this.refundService.getAllRefunds(user.id);
+    }
+
+    @Delete('/:id')
+    @UseGuards(JwtAuthGuard)
+    async remove(@Param('id') id: string, @UserObj() user: UserEntity): Promise<void> {
+        return this.refundService.removeOneByUuid(id, user.id);
     }
 }

@@ -25,5 +25,10 @@ export class RefundCreateDto {
     @IsNotEmpty()
     description: string;
 
+    @IsString()
+    @IsNotEmpty()
+    orderId: string;
+
+
 
 }
