@@ -21,7 +21,18 @@ export class RefundService {
 
 
     async create(refundCreateDto: RefundCreateDto) {
-        const {email, receiptOrInvoiceNumber, productCode, productTitle, reason, description} = refundCreateDto
+        const {email, receiptOrInvoiceNumber, productCode, productTitle, reason, description, orderId} = refundCreateDto
+        
+        const isExistRefund = await RefundEntity.findOmeBy({orderId})
+        if(isExistRefund) {
+          throw new HttpException(
+        {
+          message: `Zwrot dotyczący zamówienia nr: ${orderId} został zgłoszony.`,
+          isSuccess: false,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+        }
 
         try {
             const refund = new RefundEntity();
@@ -29,6 +40,7 @@ export class RefundService {
             const currentDate = date.getUTCFullYear() + '/' + (date.getMonth() + 1) + '/' + (date.getUTCDate())
             const refundUuid = uuid();
             refund.email = email;
+            refund.orderId = orderId;
             refund.receiptOrInvoiceNumber = receiptOrInvoiceNumber;
             refund.productTitle = productTitle;
             refund.productCode = productCode;
@@ -38,12 +50,12 @@ export class RefundService {
             refund.status = 'Nowe'
             refund.uuid = refundUuid
             await refund.save();
-            /*await this.mailerService.sendMail({
+            await this.mailerService.sendMail({
                 to: `${email}`,
                 subject: 'Potwierdzenie złożenia reklamacji produktu',
                 text: 'Potwierdzenie złożenia reklamacji produktu',
                 html: refundCreatedMailTemplate(refundCreateDto, refundUuid),
-            })*/
+            })
             return createResponse(true, `Pomyślnie utworzono zwrot, sprawdź skrzynkę pocztową: ${email}`, 200)
         } catch (e) {
           console.log('error z service', e)
