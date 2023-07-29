@@ -114,7 +114,9 @@ export class RefundService {
     async getAllRefunds(userId: string): Promise<GetListOfAllRefundsResponse> {
 
         try {
-            const refunds =  await RefundEntity.find()
+            const refunds = await RefundEntity.find({
+                order: { createdAt: 'DESC' }, // Sortowanie wyników po dacie dodania w odwrotnej kolejności (najnowsze na samej górze)
+            });
             return refunds
         } catch (e) {
             throw new HttpException(
