@@ -7,6 +7,7 @@ import { createResponse } from '../utils/createResponse';
 import { UserEntity } from '../user/entities/user.entity';
 import { getToken } from '../utils/furgonetkaGetToken.utils';
 import { createAuthHeadersFromStoreCredentials } from '../utils/createAuthHeadersFromStoreCredentials';
+import {Cron, CronExpression} from "@nestjs/schedule";
 
 @Injectable()
 export class StoreService {
@@ -61,5 +62,19 @@ export class StoreService {
       store_url: store.url,
       store_name: store.name,
     };
+  }
+
+  @Cron(CronExpression.EVERY_28_DAYS)
+  async refreshFurgonetkaToken() {
+    try {
+      const store_url = process.env.WOOCOMMERCE_STORE_URL
+      const store = await StoreEntity.findOneBy({url: store_url})
+      const furgonetka_access_token = await getToken();
+      store.furgonetka_access_token = furgonetka_access_token
+      await store.save()
+      return createResponse(true, 'Pomyślnie zaaktualizowano token', 200)
+    } catch(e) {
+        return createResponse(false, `Coś poszło nie tak`, 400)
+    }
   }
 }
