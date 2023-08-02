@@ -8,6 +8,7 @@ import {MailerService} from "@nestjs-modules/mailer";
 import {Cron, CronExpression} from "@nestjs/schedule";
 import {OrderEntity} from "../order/entities/order.entity";
 import {mailTemplate} from "../utils/mailTemplate";
+import {StoreEntity} from "../store/entities/store.entity";
 
 
 @Injectable()
@@ -66,10 +67,14 @@ export class StatusService {
         let ordersWithDeliveredStatus = []
         let ordersWithSendStatus = []
 
+        const store_url = process.env.WOOCOMMERCE_STORE_URL
+        const store = await StoreEntity.findOneBy({url: store_url})
+
+
         for (const order of orders) {//tego typu pętla pozwala na uzycie asynchronicznych funkcji w przeciwieństwie do forEach
             const url = `${process.env.STORE_URL}/wp-json/wc/v3/orders/${order.id}`;
             const tracking_number = await getTrackingNumberFromOrder(order);
-            const shipping = await this.furgonetkaService.getPackage(tracking_number, process.env.FURGONETKA_ACCES_TOKEN);
+            const shipping = await this.furgonetkaService.getPackage(tracking_number, store.furgonetka_access_token);
             const isOrderExist = await OrderEntity.findOneBy({order_id: order.id})
             if (!isOrderExist) { //jesli nie ma to tworzy nową encje w lokalnej bazie danych
                 const newOrder = await new OrderEntity()
