@@ -26,4 +26,10 @@ export class StoreController {
   getOneById(@Param('id') id: string) {
     return this.storeService.getOneById(id);
   }
+
+  @Get('/refresh/token')
+  @UseGuards(JwtAuthGuard)
+  refreshToken() {
+    return this.storeService.refreshFurgonetkaToken();
+  }
 }
