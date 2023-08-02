@@ -64,7 +64,7 @@ export class StoreService {
     };
   }
 
-  @Cron(CronExpression.EVERY_28_DAYS)
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
   async refreshFurgonetkaToken() {
     try {
       const store_url = process.env.WOOCOMMERCE_STORE_URL
