@@ -72,7 +72,10 @@ export class StoreService {
       const furgonetka_access_token = await getToken();
       store.furgonetka_access_token = furgonetka_access_token
       await store.save()
-      return createResponse(true, 'Pomyślnie zaaktualizowano token', 200)
+      return createResponse(true, 'Pomyślnie zaaktualizowano token',200, {
+        old_token: store.furgonetka_access_token,
+        new_token: furgonetka_access_token,
+      })
     } catch(e) {
         return createResponse(false, `Coś poszło nie tak`, 400)
     }
