@@ -69,14 +69,10 @@ export class StoreService {
     try {
       const store_url = process.env.WOOCOMMERCE_STORE_URL
       const store = await StoreEntity.findOneBy({url: store_url})
-      const oldToken = store.furgonetka_access_token
       const furgonetka_access_token = await getToken();
       store.furgonetka_access_token = furgonetka_access_token
       await store.save()
-      return createResponse(true, 'Pomyślnie zaaktualizowano token',200, {
-        old_token: oldToken,
-        new_token: furgonetka_access_token,
-      })
+      return createResponse(true, 'Pomyślnie zaaktualizowano token',200)
     } catch(e) {
         return createResponse(false, `Coś poszło nie tak`, 400)
     }
