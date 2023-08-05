@@ -49,8 +49,9 @@ export class RefundService {
             refund.reason = reason;
             refund.createdAt = currentDate;
             refund.updatedAt = currentDate;
-            refund.status = 'Nowe'
-            refund.uuid = refundUuid
+            refund.status = 'Nowe';
+            refund.uuid = refundUuid;
+            refund.description = description;
             await refund.save();
             await this.mailerService.sendMail({
                 to: `${email}`,
