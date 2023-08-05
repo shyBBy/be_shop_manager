@@ -1,5 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import axios from 'axios';
+import {StoreEntity} from "../store/entities/store.entity";
 
 @Injectable()
 export class FurgonetkaService {
@@ -45,6 +46,24 @@ export class FurgonetkaService {
             return shipping;
         } catch (e) {
             return null;
+        }
+    }
+
+    public async downloadShippingLabel(package_id: any) {
+        const url = `https://api.furgonetka.pl/packages/${package_id}/label`;
+        try {
+            const store_url = process.env.WOOCOMMERCE_STORE_URL
+            const store = await StoreEntity.findOneBy({url: store_url})
+            const res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${store.furgonetka_access_token}`
+                }
+            })
+            console.log(`RESPONSE`, res)
+            const label = res.data;
+            return label;
+        } catch (e) {
+            console.log(e)
         }
     }
 }
