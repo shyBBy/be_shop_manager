@@ -11,11 +11,11 @@ export interface FurgonetkaUser {
 export class FurgonetkaController {
   constructor(private readonly furgonetkaService: FurgonetkaService) {}
 
-  @Get('/label/:id')
-  @UseGuards(JwtAuthGuard)
-  getLabel(@Param('id') id: string,) {
-    return this.furgonetkaService.downloadShippingLabel(id)
-  }
+  // @Get('/label/:id')
+  // @UseGuards(JwtAuthGuard)
+  // getLabel(@Param('id') id: string,) {
+  //   return this.furgonetkaService.downloadShippingLabel(id)
+  // }
 
   // @Post('token')
   // async getToken(@UserObj() user: UserEntity) {
