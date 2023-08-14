@@ -15,6 +15,19 @@ export class OrderController {
     return this.orderService.getAllOrders(user.id);
   }
 
+  @Get('/reports/sales')
+  @UseGuards(JwtAuthGuard)
+  getSalesReport(@UserObj() user: UserEntity) {
+    return this.orderService.getSalesReport(user.id);
+  }
+
+  @Get('/reports/orders')
+  @UseGuards(JwtAuthGuard)
+  getOrdersReport(@UserObj() user: UserEntity) {
+    return this.orderService.getOrdersReport(user.id);
+  }
+
+
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
   getOneById(@Param('id') id: string, @UserObj() user: UserEntity) {

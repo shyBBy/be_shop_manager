@@ -126,4 +126,31 @@ export class OrderService {
     }
   }
 
+  async getSalesReport(user_id?: string) {
+    const store = await this.storeService.getStoreByUserId(user_id);
+    const url = `${store.store_url}/wp-json/wc/v3/reports/sales`;
+
+    try {
+      const res = await axios.get(url, { headers: store.headers });
+      const reportsRes = res.data || {};
+      return reportsRes
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async getOrdersReport(user_id?: string) {
+    const store = await this.storeService.getStoreByUserId(user_id);
+    const url = `${store.store_url}/wp-json/wc/v3/reports/orders/totals`;
+
+    try {
+      const res = await axios.get(url, { headers: store.headers });
+      const ordersRes = res.data || {};
+      return ordersRes
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+
 }
