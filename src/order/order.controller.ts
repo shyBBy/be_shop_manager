@@ -27,6 +27,12 @@ export class OrderController {
     return this.orderService.getOrdersReport(user.id);
   }
 
+  @Get('/reports/topproducts')
+  @UseGuards(JwtAuthGuard)
+  getTopProductSales(@UserObj() user: UserEntity) {
+    return this.orderService.getTopProductSales(user.id);
+  }
+
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)

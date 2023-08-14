@@ -152,5 +152,26 @@ export class OrderService {
     }
   }
 
+  async getTopProductSales(user_id?: string) {
+    const store = await this.storeService.getStoreByUserId(user_id);
+    const url = `${store.store_url}/wp-json/wc/v3/reports/top_sellers`;
+
+    try {
+
+      const res = await axios.get(url, {
+        headers: store.headers,
+        params: {
+          period: "year"
+        }
+      });
+      const topProductSalesRes = res.data || {};
+      return topProductSalesRes
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+
+
 
 }
