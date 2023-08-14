@@ -33,6 +33,13 @@ export class OrderController {
     return this.orderService.getTopProductSales(user.id);
   }
 
+  @Get('/reports/topproducts/product/:id')
+  @UseGuards(JwtAuthGuard)
+  getProductImageUrl(@Param('id') id: string,@UserObj() user: UserEntity) {
+    return this.orderService.getProductImageUrl(user.id, id);
+  }
+
+
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)

@@ -171,6 +171,24 @@ export class OrderService {
     }
   }
 
+  async getProductImageUrl(user_id?: string, product_id?: string | number) {
+    const store = await this.storeService.getStoreByUserId(user_id);
+    const url = `${store.store_url}/wp-json/wc/v3/products/${product_id}`;
+    try {
+
+      const res = await axios.get(url, {
+        headers: store.headers,
+      });
+      const data = res.data;
+      const image = {
+        url: `${data.images[0].src}`
+      }
+      return image
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
 
 
 
