@@ -133,7 +133,7 @@ export class OrderService {
     try {
       const res = await axios.get(url, { headers: store.headers });
       const reportsRes = res.data || {};
-      return reportsRes
+      return reportsRes[0]
     } catch (e) {
       console.log(e)
     }
