@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
+import {Controller, Get, Param, Put, Query, UseGuards} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { GetListOfAllOrdersResponse } from '../../types/order/order';
@@ -17,8 +17,11 @@ export class OrderController {
 
   @Get('/reports/sales')
   @UseGuards(JwtAuthGuard)
-  getSalesReport(@UserObj() user: UserEntity) {
-    return this.orderService.getSalesReport(user.id);
+  getSalesReport(
+      @UserObj() user: UserEntity,
+      @Query('fromDate') fromDate: string,
+  ) {
+    return this.orderService.getSalesReport(user.id, fromDate);
   }
 
   @Get('/reports/orders')
@@ -32,13 +35,6 @@ export class OrderController {
   getTopProductSales(@UserObj() user: UserEntity) {
     return this.orderService.getTopProductSales(user.id);
   }
-
-  @Get('/reports/topproducts/product/:id')
-  @UseGuards(JwtAuthGuard)
-  getProductImageUrl(@Param('id') id: string,@UserObj() user: UserEntity) {
-    return this.orderService.getProductImageUrl(user.id, id);
-  }
-
 
 
   @Get('/:id')

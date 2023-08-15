@@ -126,12 +126,24 @@ export class OrderService {
     }
   }
 
-  async getSalesReport(user_id?: string) {
+  async getSalesReport(user_id?: string, fromDate?: string) {
     const store = await this.storeService.getStoreByUserId(user_id);
     const url = `${store.store_url}/wp-json/wc/v3/reports/sales`;
+    const today = new Date();
+    const formattedToday = today.toISOString().slice(0, 10); // Konwertuje na "YYYY-MM-DD" format
+
+    if (typeof fromDate === 'undefined') {
+      fromDate = '2023-05-06'
+    }
 
     try {
-      const res = await axios.get(url, { headers: store.headers });
+      const res = await axios.get(url, {
+        headers: store.headers,
+        params: {
+          date_min: fromDate,
+          date_max: formattedToday
+        }
+      });
       const reportsRes = res.data || {};
       return reportsRes[0]
     } catch (e) {
@@ -165,18 +177,18 @@ export class OrderService {
         }
       });
       const topProductSalesRes = res.data || {};
-      let topProductSalesResWithImageArray = []
-      topProductSalesRes.slice(0,5).map((product) => {
-        imageUrl = await this.getProductImageUrl(user_id, product.product_id)
-        let data = {
+      const topProductSalesResWithImageArray = await Promise.all(topProductSalesRes.slice(0, 5).map(async (product) => {
+        const imageUrlData = await this.getProductImageUrl(user_id, product.product_id);
+        const data = {
           ...product,
-          image: imageUrl
-        }
-        topProductSalesResWithImageArray.push(data)
-      })
-      return topProductSalesResWithImageArray
+          image: imageUrlData
+        };
+        return data;
+      }));
+      //W powyższym kodzie użyłem funkcji Promise.all, aby asynchronicznie pobrać adresy URL obrazków dla wszystkich pięciu produktów. Dzięki temu nie trzeba czekać na zakończenie jednego zapytania przed wykonaniem następnego, co przyspiesza działanie funkcji.//
+      return topProductSalesResWithImageArray;
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   }
 
@@ -190,7 +202,7 @@ export class OrderService {
       });
       const data = res.data;
       const image = {
-        url: `${data.images[0].src}`
+        url: data.images[0].src
       }
       return image
     } catch (e) {
