@@ -111,6 +111,24 @@ export class RefundService {
         }
 
     }
+    
+    async sendEmailToClient(refundUuid: string, emailContent: string) {
+      
+      const refund = await RefundEntity.findOneBy({uuid: refundUuid})
+      if (!refund) {
+        //obsłużyć błąd 
+      }
+      try {
+        await this.mailerService.sendMail({
+                    to: `${refund.email}`,
+                    subject: 'Otrzymales wiadomość dotycząca zwrotu towaru',
+                    text: 'Sprawdz wiadomość do zwrotu z bigsewciu',
+                    html: `${emailContent}`
+                })
+      } catch(e) {
+        console.log(e)
+      }
+    }
 
     async getAllRefunds(userId: string): Promise<GetListOfAllRefundsResponse> {
 
