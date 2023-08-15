@@ -165,7 +165,16 @@ export class OrderService {
         }
       });
       const topProductSalesRes = res.data || {};
-      return topProductSalesRes
+      let topProductSalesResWithImageArray = []
+      topProductSalesRes.slice(0,5).map((product) => {
+        imageUrl = await this.getProductImageUrl(user_id, product.product_id)
+        let data = {
+          ...product,
+          image: imageUrl
+        }
+        topProductSalesResWithImageArray.push(data)
+      })
+      return topProductSalesResWithImageArray
     } catch (e) {
       console.log(e)
     }
