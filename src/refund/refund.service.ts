@@ -126,6 +126,8 @@ export class RefundService {
                 text: 'Sprawdz wiadomość do zwrotu z bigsewciu',
                 html: `${emailContent}`
             })
+
+            return createResponse(true, `Pomyślnie wysłano wiadomośc do klienta`, 200)
         } catch (e) {
             console.log(e)
         }
