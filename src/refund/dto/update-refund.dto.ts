@@ -1,4 +1,4 @@
-import {IsOptional} from "class-validator";
+import {IsOptional, IsString} from "class-validator";
 
 
 export class RefundUpdateDto {
@@ -34,4 +34,8 @@ export class RefundUpdateDto {
 
     @IsOptional()
     updateReason: string;
+
+    @IsOptional()
+    @IsString()
+    emailContent: string;
 }

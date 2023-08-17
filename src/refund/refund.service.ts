@@ -111,30 +111,34 @@ export class RefundService {
         }
 
     }
-    
-    async sendEmailToClient(refundUuid: string, emailContent: string) {
-      
-      const refund = await RefundEntity.findOneBy({uuid: refundUuid})
-      if (!refund) {
-        //obsłużyć błąd 
-      }
-      try {
-        await this.mailerService.sendMail({
-                    to: `${refund.email}`,
-                    subject: 'Otrzymales wiadomość dotycząca zwrotu towaru',
-                    text: 'Sprawdz wiadomość do zwrotu z bigsewciu',
-                    html: `${emailContent}`
-                })
-      } catch(e) {
-        console.log(e)
-      }
+
+    async sendEmailToClient(refundUuid: string, emailContentDto: RefundUpdateDto) {
+        const {emailContent} = emailContentDto
+
+        const refund = await RefundEntity.findOneBy({uuid: refundUuid})
+        if (!refund) {
+            //obsłużyć błąd
+        }
+        try {
+            const date = new Date()
+            refund.updatedAt = date.getUTCFullYear() + '/' + (date.getMonth() + 1) + '/' + (date.getUTCDate())
+            await refund.save()
+            await this.mailerService.sendMail({
+                to: `${refund.email}`,
+                subject: 'Otrzymales wiadomość dotycząca zwrotu towaru',
+                text: 'Sprawdz wiadomość do zwrotu z bigsewciu',
+                html: `${emailContent}`
+            })
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     async getAllRefunds(userId: string): Promise<GetListOfAllRefundsResponse> {
 
         try {
             const refunds = await RefundEntity.find({
-                order: { id: 'DESC' }, // Sortowanie wyników po numerze ID w odwrotnej kolejności (największe ID na samej górze)
+                order: {id: 'DESC'}, // Sortowanie wyników po numerze ID w odwrotnej kolejności (największe ID na samej górze)
             });
             return refunds
         } catch (e) {

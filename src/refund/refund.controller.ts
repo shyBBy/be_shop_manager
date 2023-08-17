@@ -39,6 +39,17 @@ export class RefundController {
         return this.refundService.getOneByUuid(uuid);
     }
 
+    @Get('/:uuid/sendemail')
+    @UseGuards(JwtAuthGuard)
+    sendEmailToClient(
+        @Param('uuid') uuid: string,
+        @UserObj() user: UserEntity,
+        @Body() emailContentDto: RefundUpdateDto
+    ) {
+        return this.refundService.sendEmailToClient(uuid, emailContentDto )
+    }
+
+
 
     @Delete('/:id')
     @UseGuards(JwtAuthGuard)
