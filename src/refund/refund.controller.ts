@@ -39,7 +39,7 @@ export class RefundController {
         return this.refundService.getOneByUuid(uuid);
     }
 
-    @Get('/:uuid/sendemail')
+    @Post('/:uuid/sendemail')
     @UseGuards(JwtAuthGuard)
     sendEmailToClient(
         @Param('uuid') uuid: string,

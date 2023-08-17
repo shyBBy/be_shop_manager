@@ -120,9 +120,6 @@ export class RefundService {
             //obsłużyć błąd
         }
         try {
-            const date = new Date()
-            refund.updatedAt = date.getUTCFullYear() + '/' + (date.getMonth() + 1) + '/' + (date.getUTCDate())
-            await refund.save()
             await this.mailerService.sendMail({
                 to: `${refund.email}`,
                 subject: 'Otrzymales wiadomość dotycząca zwrotu towaru',
