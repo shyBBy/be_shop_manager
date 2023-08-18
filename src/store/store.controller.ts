@@ -14,6 +14,24 @@ export class StoreController {
   create(@Body() createStoreDto: StoreCreateDto, @UserObj() user: UserEntity) {
     return this.storeService.create(createStoreDto, user.id);
   }
+  
+  @Post('/coupon/create')
+  @UseGuards(JwtAuthGuard)
+  createCoupon(@Body() createCouponDto: CouponCreateDto, @UserObj() user: UserEntity) {
+    return this.storeService.createCoupon(createCouponDto, user.id)
+  }
+  
+  @Get('/coupon/list')
+  UseGuards(JwtAuthGuard)
+  listAllCoupons(@UserObj() user: UserEntity) {
+    return this.storeService.listAllCoupons(user.id)
+  }
+  
+  @Get('coupon/:id')
+  UseGuards(JwtAuthGuard)
+  getOneCouponById(@Param('id') id: string, @UserObj() user: UserEntity) {
+    return this.storeService.getOneCouponById
+  }
 
   @Get('/byuserid')
   @UseGuards(JwtAuthGuard)
@@ -26,6 +44,8 @@ export class StoreController {
   getOneById(@Param('id') id: string) {
     return this.storeService.getOneById(id);
   }
+  
+ 
 
   @Get('/refresh/token')
   @UseGuards(JwtAuthGuard)
