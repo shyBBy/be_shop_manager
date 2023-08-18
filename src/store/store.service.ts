@@ -77,4 +77,40 @@ export class StoreService {
         return createResponse(false, `Coś poszło nie tak`, 400)
     }
   }
+  
+  
+  async createCoupon(createCouponDto: CouponCreateDto, userUuid: string) {
+    
+    const {} = createCouponDto
+    
+    const data = {
+  code: "10off",
+  discount_type: "percent",
+  description: '',
+  date_expires: 'lub expires_gmt',
+  usage_limit_per_user: 1,
+  amount: "10",//wartość rabatu
+  individual_use: true, //czyli nie może być używany z innymi kuponami
+  exclude_sale_items: true,// czyli nie zadziala na produktach przecenionych
+  minimum_amount: "100.00"//minimalna wartość koszyka
+};
+
+const store = await this.storeService.getStoreByUserId(user_id);
+    const url = `${store.store_url}/wp-json/wc/v3/coupons`;
+    
+    try {
+      
+      
+    } catch(e) {
+      
+    }
+
+  }
+  
+  
+  
+  
+  
+  
+  
 }
