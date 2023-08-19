@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, UseGuards} from '@nestjs/common';
 import { StoreService } from './store.service';
 import { StoreCreateDto } from './dto/create-store.dto';
 import { UserObj } from '../decorators/user-object.decorator';
 import { UserEntity } from '../user/entities/user.entity';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import {CouponCreateDto} from "./dto/createCoupon.dto";
 
 @Controller('store')
 export class StoreController {
@@ -22,15 +23,21 @@ export class StoreController {
   }
   
   @Get('/coupon/list')
-  UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   listAllCoupons(@UserObj() user: UserEntity) {
     return this.storeService.listAllCoupons(user.id)
   }
-  
+
   @Get('coupon/:id')
-  UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   getOneCouponById(@Param('id') id: string, @UserObj() user: UserEntity) {
-    return this.storeService.getOneCouponById
+    return this.storeService.getOneCouponById(id, user.id);
+  }
+
+  @Delete('coupon/:id')
+  @UseGuards(JwtAuthGuard)
+  deleteCoupon(@Param('id') id: string, @UserObj() user: UserEntity) {
+    return this.storeService.deleteCoupon(id, user.id);
   }
 
   @Get('/byuserid')

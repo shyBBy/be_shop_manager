@@ -1,13 +1,40 @@
+import {IsBoolean, IsNumber, IsOptional, IsString} from "class-validator";
+
 export class CouponCreateDto {
-  
-  code: "10off",
-  discount_type: "percent",
-  description: '',
-  date_expires: 'lub expires_gmt',
-  usage_limit_per_user: 1,
-  amount: "10",//wartość rabatu
-  individual_use: true, //czyli nie może być używany z innymi kuponami
-  exclude_sale_items: true,// czyli nie zadziala na produktach przecenionych
-  minimum_amount: "100.00"//minimalna wartość koszyka
-  // https://woocommerce.github.io/woocommerce-rest-api-docs/#coupon-properties
+
+    @IsString()
+    code: string;
+
+    @IsString()
+    discount_type: string;
+
+    @IsString()
+    @IsOptional()
+    description: string;
+
+    @IsOptional()
+    date_expires: Date | string;
+
+    @IsOptional()
+    date_expires_gmt: Date | string;
+
+    @IsOptional()
+    individual_use: boolean;
+
+
+    @IsOptional()
+    @IsNumber()
+    usage_limit_per_user: number;
+
+    @IsString()
+    amount: string;
+
+    @IsOptional()
+    @IsBoolean()
+    exclude_sale_items: boolean;
+
+    @IsOptional()
+    @IsString()
+    minimum_amount: string
+
 }
