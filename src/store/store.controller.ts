@@ -19,6 +19,7 @@ export class StoreController {
   @Post('/coupon/create')
   @UseGuards(JwtAuthGuard)
   createCoupon(@Body() createCouponDto: CouponCreateDto, @UserObj() user: UserEntity) {
+    console.log(createCouponDto)
     return this.storeService.createCoupon(createCouponDto, user.id)
   }
   
