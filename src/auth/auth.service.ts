@@ -32,6 +32,13 @@ export class AuthService {
     const payload = { email: user.email };
     const token = sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
     const oneDay = 1000 * 60 * 60 * 24;
+    
+    if (!user.isActive) {
+            throw new BadRequestException(
+                'Twoje konto jest nieaktywne, sprawdź proszę skrzynkę pocztową.',
+            );
+        }
+
 
     const userRes = await this.userService.getMe(user);
     return res

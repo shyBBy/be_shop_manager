@@ -23,6 +23,7 @@ export class UserService {
   async create(createUserDto: UserCreateDto) {
     const { email, password } = createUserDto;
 
+    const activationCode = ActivationCode.create();
     const checkEmail = await UserEntity.findOneBy({ email });
 
     if (checkEmail) {
@@ -39,8 +40,16 @@ export class UserService {
       const user = new UserEntity();
       user.email = email;
       user.password = hashPwd(password);
+      user.isActive = false;
+      user.activationCode = activationCode;
       await user.save();
-      return createResponse(true, 'Pomyślnie utworzono konto', 200);
+      await this.mailerService.sendMail({
+                to: `${email}`,
+                subject: 'Kod aktywacyjny',
+                text: 'Test e-mail',
+                html: mailTemplate(activationCode),
+            })
+      return createResponse(true, 'Pomyślnie utworzono konto, sprawdź skrzynkę pocztową i aktywuj konto!', 200);
     } catch (e) {
       throw new HttpException(
         {
@@ -73,6 +82,7 @@ export class UserService {
     return {
       id: selectedUser.id,
       email: selectedUser.email,
+      isActive: selectedUser.isActive,
       store: storeData,
     };
 
@@ -90,4 +100,49 @@ export class UserService {
   async getByEmail(email: string): Promise<UserEntity | null> {
     return await UserEntity.findOneBy({ email });
   }
+  
+  async activation(activationUserDto: ActivationUserDto) {
+        const {email, activationCode} = activationUserDto;
+
+
+        try {
+            const user = await UserEntity.findOneBy({email});
+
+            if (!user) {
+                throw new HttpException(
+                    {
+                        message: `Konto o podanym adresie e-mail nie znajduje się w bazie danych.`,
+                        isSuccess: false,
+                    },
+                    HttpStatus.BAD_REQUEST,
+                );
+            }
+
+            const compare: boolean = ActivationCode.compare(user.activationCode, activationCode)
+
+            if (!compare) {
+                throw new HttpException(
+                    {
+                        message: `Niepoprawny kod aktywacyjny`,
+                        isSuccess: false,
+                    },
+                    HttpStatus.BAD_REQUEST,
+                );
+            }
+
+            user.isActive = true
+            await user.save();
+            return createResponse(true, 'Pomyślnie aktywowano konto, możesz się zalogować', 200)
+
+        } catch (e) {
+            throw new HttpException(
+                {
+                    message: `Coś poszło nie tak, spróbuj ponownie.`,
+                    isSuccess: false,
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
+    }
 }

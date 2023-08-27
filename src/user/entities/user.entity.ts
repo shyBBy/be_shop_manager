@@ -25,6 +25,16 @@ export class UserEntity extends BaseEntity {
     default: '',
   })
   password: string;
+  
+  @Column({
+    default: false,
+  })
+  isActive: boolean;
+  
+  @Column({
+    default: '',
+  })
+  activationCode: string;
 
   @OneToOne(() => StoreEntity, (store) => store.user_profile, {
     eager: true,

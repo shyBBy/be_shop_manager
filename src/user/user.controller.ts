@@ -19,4 +19,10 @@ export class UserController {
   create(@Body() createUserDto: UserCreateDto) {
     return this.userService.create(createUserDto);
   }
+  
+  @Post('activation')
+    getOneAndCheckActivationCode(@Body() activationUserDto: ActivationUserDto) {
+        console.log('w kontrolerze')
+        return this.userService.activation(activationUserDto);
+    }
 }
