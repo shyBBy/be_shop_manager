@@ -12,11 +12,16 @@ import { createResponse } from '../utils/createResponse';
 import { UserEntity } from './entities/user.entity';
 import { hashPwd } from '../utils/password.utils';
 import { UserRes } from '../../types/user/user';
+import {ActivationCode} from "../utils/activationCodeCreater";
+import {activationAccountMailTemplate} from "../utils/activationAccountMailTemplate";
+import {MailerService} from "@nestjs-modules/mailer";
+import {ActivationUserDto} from "./dto/activation-user.dto";
 
 @Injectable()
 export class UserService {
   constructor(
     private dataSource: DataSource,
+    private readonly mailerService: MailerService,
     @Inject(forwardRef(() => AuthService)) private authService: AuthService,
   ) {}
 
@@ -46,8 +51,8 @@ export class UserService {
       await this.mailerService.sendMail({
                 to: `${email}`,
                 subject: 'Kod aktywacyjny',
-                text: 'Test e-mail',
-                html: mailTemplate(activationCode),
+                text: 'Kod aktywacyjny',
+                html: activationAccountMailTemplate(activationCode),
             })
       return createResponse(true, 'Pomyślnie utworzono konto, sprawdź skrzynkę pocztową i aktywuj konto!', 200);
     } catch (e) {
