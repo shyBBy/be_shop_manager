@@ -13,7 +13,6 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@UserObj() user: UserEntity, @Res() res: Response) {
-    console.log(`user=-=-=-`, user);
     return this.authService.login(user, res);
   }
 
