@@ -40,12 +40,13 @@
 //   };
 // };
 
-interface ResponseData {
+export interface ResponseData {
   message: string;
   isSuccess: boolean;
   statusCode: number;
   data?: any;
 }
+
 
 export const createResponse = (
   isSuccess: boolean,

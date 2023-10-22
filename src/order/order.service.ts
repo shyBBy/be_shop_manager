@@ -211,6 +211,23 @@ export class OrderService {
   }
 
 
+  async testUser(user_id) {
+
+    const store = await this.storeService.getStoreByUserId(user_id);
+    const url = `${store.store_url}/wp-json/wc/v3/customers`;
+
+    try {
+      const res = await axios.get(url, { headers: store.headers });
+
+      const ordersRes = res.data || {};
+      return ordersRes
+    } catch (e) {
+      console.log(e)
+    }
+
+  }
+
+
 
 
 }

@@ -16,6 +16,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { StatusModule } from './status/status.module';
 import { RefundModule } from './refund/refund.module';
 import {RefundEntity} from "./refund/entities/refund.entity";
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import {RefundEntity} from "./refund/entities/refund.entity";
     FurgonetkaModule,
     StatusModule,
     RefundModule,
+    CustomerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

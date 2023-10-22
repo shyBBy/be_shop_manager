@@ -36,6 +36,11 @@ export class UserEntity extends BaseEntity {
   })
   activationCode: string;
 
+  @Column({
+    default: '',
+  })
+  wpTokenAuth: string;
+
   @OneToOne(() => StoreEntity, (store) => store.user_profile, {
     eager: true,
   })

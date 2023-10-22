@@ -43,6 +43,12 @@ export class OrderController {
     return this.orderService.getOneById(id, user.id);
   }
 
+  @Get('/testUser')
+  @UseGuards(JwtAuthGuard)
+  testUser(@UserObj() user: UserEntity) {
+    return this.orderService.testUser(user.id);
+  }
+
   // @Put('/status/:id')
   // @UseGuards(JwtAuthGuard)
   // updateStatus(
