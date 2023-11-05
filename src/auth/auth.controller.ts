@@ -18,13 +18,11 @@ export class AuthController {
   }
 
   @Post('wp-login')
-  @UseGuards(JwtAuthGuard)
   async wpLogin(
-      @UserObj() user: UserEntity,
       @Body() wpLoginDto: WpLoginDto,
       @Res() res: Response,
   ) {
-    return this.authService.wpLogin(wpLoginDto, user, res);
+    return this.authService.wpLogin(wpLoginDto, res);
   }
 
   @Get('wp-login/token')
