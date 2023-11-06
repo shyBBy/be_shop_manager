@@ -9,14 +9,6 @@ export class WpLoginDto {
     @IsString()
     password: string;
 
-    @IsNotEmpty()
-    @IsString()
-    userId: string;
-
-    @IsNotEmpty()
-    @IsString()
-    userEmail: string;
-
 }
 
 export class WpTokenDto {

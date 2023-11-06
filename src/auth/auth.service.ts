@@ -58,11 +58,12 @@ export class AuthService {
 
     async wpLogin(
         wpLoginDto: WpLoginDto,
+        user: any,
         res: Response,
     ): Promise<any> {
         try {
-            const {username, password, userId, userEmail} = wpLoginDto;
-            const store = await this.storeService.getStoreByUserId(userId);
+            const {username, password} = wpLoginDto;
+            const store = await this.storeService.getStoreByUserId(user.id);
             const url = `${store.store_url}/wp-json/jwt-auth/v1/token`;
             const response = await axios.post(url, {
                 username,
@@ -73,7 +74,7 @@ export class AuthService {
             const token = response.data.token;
 
             // Zapisz token w encji użytkownika (przykład, dostosuj do Twojej struktury)
-            const userEntity = await this.userService.getByEmail(userEmail);
+            const userEntity = await this.userService.getByEmail(user.email);
             userEntity.wpTokenAuth = token;
             await userEntity.save();
 
@@ -84,6 +85,12 @@ export class AuthService {
 
             // Tutaj możesz dostosować res.cookie do Twoich potrzeb
             return res
+                .cookie('wpLoginToken', wpLoginRes.token, {
+                    secure: Boolean(process.env.WPLOGINTOKEN_COOKIE_SECURE),
+                    domain: process.env.JWT_COOKIE_DOMAIN,
+                    httpOnly: Boolean(process.env.JWT_HTTP_ONLY),
+                    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dni w milisekundach
+                })
                 .json(wpLoginRes);
         } catch (error) {
             console.log(error);
