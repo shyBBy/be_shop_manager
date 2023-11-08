@@ -43,9 +43,22 @@ export class AuthService {
                 'Twoje konto jest nieaktywne, sprawdź proszę skrzynkę pocztową.',
             );
         }
-
-
-    const userRes = await this.userService.getMe(user);
+   const userRes = await this.userService.getMe(user);
+    
+    const handleWpLogin = await wpLogin(
+      {
+      username: '',
+      password: '',
+      },
+      userRes,
+      )
+      
+      if(!handleWpLogin) {
+        throw new BadRequestException(
+          'Blad logowania WP')
+      }
+    
+    
     return res
       .cookie('jwt', token, {
         secure: Boolean(process.env.JWT_COOKIE_SECURE),
@@ -59,7 +72,6 @@ export class AuthService {
     async wpLogin(
         wpLoginDto: WpLoginDto,
         user: any,
-        res: Response,
     ): Promise<any> {
         try {
             const {username, password} = wpLoginDto;
@@ -78,20 +90,8 @@ export class AuthService {
             userEntity.wpTokenAuth = token;
             await userEntity.save();
 
-            // Tutaj dostosuj odpowiedź do Twoich potrzeb
-            const wpLoginRes = {
-                token,
-            };
 
-            // Tutaj możesz dostosować res.cookie do Twoich potrzeb
-            return res
-                .cookie('wpLoginToken', wpLoginRes.token, {
-                    secure: Boolean(process.env.WPLOGINTOKEN_COOKIE_SECURE),
-                    domain: process.env.JWT_COOKIE_DOMAIN,
-                    httpOnly: Boolean(process.env.JWT_HTTP_ONLY),
-                    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dni w milisekundach
-                })
-                .json(wpLoginRes);
+            return true
         } catch (error) {
             console.log(error);
             throw new Error('Nie udało się zalogować do WordPress.');

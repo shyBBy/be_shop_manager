@@ -22,7 +22,6 @@ export class AuthController {
   async wpLogin(
       @UserObj() user: UserEntity,
       @Body() wpLoginDto: WpLoginDto,
-      @Res() res: Response,
   ) {
     return this.authService.wpLogin(wpLoginDto, user, res);
   }
