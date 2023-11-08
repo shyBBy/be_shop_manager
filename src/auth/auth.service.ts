@@ -44,20 +44,20 @@ export class AuthService {
             );
         }
    const userRes = await this.userService.getMe(user);
-    
-    const handleWpLogin = await wpLogin(
-      {
-      username: '',
-      password: '',
-      },
-      userRes,
-      )
-      
-      if(!handleWpLogin) {
-        throw new BadRequestException(
-          'Blad logowania WP')
+
+      try {
+          await this.wpLogin(
+              {
+                  username: process.env.WPLOGIN_USERNAME,
+                  password: process.env.WPLOGIN_PASSWORD,
+              },
+              userRes,
+          );
+      } catch (wpLoginError) {
+          throw new BadRequestException(
+              `Błąd podczas logowania do WordPress: ${wpLoginError.message}`,
+          );
       }
-    
     
     return res
       .cookie('jwt', token, {
@@ -90,11 +90,12 @@ export class AuthService {
             userEntity.wpTokenAuth = token;
             await userEntity.save();
 
-
             return true
         } catch (error) {
-            console.log(error);
-            throw new Error('Nie udało się zalogować do WordPress.');
+            if (!process.env.WPLOGIN_USERNAME || !process.env.WPLOGIN_PASSWORD) {
+                throw new BadRequestException('Brak danych logowania do WordPress. Sprawdź konfiguracje na serwerze. ');
+            }
+            throw new Error('Dane w pliku konfiguracyjnym do autoryzacji WordPress są niepoprawne, sprawdź je i spróbuj raz jeszcze. ');
         }
     }
 

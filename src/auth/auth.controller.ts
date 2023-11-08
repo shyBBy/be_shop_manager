@@ -23,7 +23,7 @@ export class AuthController {
       @UserObj() user: UserEntity,
       @Body() wpLoginDto: WpLoginDto,
   ) {
-    return this.authService.wpLogin(wpLoginDto, user, res);
+    return this.authService.wpLogin(wpLoginDto, user);
   }
 
   @Get('wp-login/token')
