@@ -1,6 +1,6 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {UserService} from "../user/user.service";
-import {GetPaginatedListOfAllCustomersResponse} from "../../types/customer/customer";
+import {GetOneCustomerResponse, GetPaginatedListOfAllCustomersResponse} from "../../types/customer/customer";
 import {createResponse, ResponseData} from "../utils/createResponse";
 import {StoreService} from "../store/store.service";
 import {UserEntity} from "../user/entities/user.entity";
@@ -107,6 +107,32 @@ export class CustomerService {
             // Możesz również dostosować informacje o błędzie w responseData, jeśli to konieczne
 
             return responseData;
+        }
+    }
+
+    async getOneCustomer(id, user: UserEntity,): Promise<GetOneCustomerResponse> {
+        const store = await this.storeService.getStoreByUserId(user.id);
+        const userEntity = await this.userService.getByEmail(user.email);
+
+        const url = `${store.store_url}/wp-json/wp/v2/users/${id}`;
+        const token = userEntity.wpTokenAuth;
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        try {
+            const res = await axios.get(url, { headers});
+            const customer = res.data;
+            return customer
+        } catch (e) {
+            console.log(e)
+            throw new HttpException(
+                {
+                    message: `Cos poszlo nie tak, spróbuj raz jeszcze.`,
+                    isSuccess: false,
+                },
+                HttpStatus.BAD_REQUEST,
+            );
         }
     }
 }

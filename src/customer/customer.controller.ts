@@ -33,4 +33,14 @@ export class CustomerController {
   ) {
     return this.customerService.updateStatus(id, status, user);
   }
+
+
+  @Get('/:id')
+  @UseGuards(JwtAuthGuard)
+  getOne(
+      @UserObj() user: UserEntity,
+      @Param('id') id: string,
+  ) {
+    return this.customerService.getOneCustomer(id, user)
+  }
 }
