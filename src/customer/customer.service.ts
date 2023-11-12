@@ -83,6 +83,10 @@ export class CustomerService {
         const store = await this.storeService.getStoreByUserId(user.id);
         const userEntity = await this.userService.getByEmail(user.email);
         const url = `${store.store_url}/wp-json/wp/v2/users/${id}`;
+        const token = userEntity.wpTokenAuth;
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
 
         const data = {
             meta: {
