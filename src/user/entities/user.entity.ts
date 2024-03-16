@@ -25,7 +25,7 @@ export class UserEntity extends BaseEntity {
     default: '',
   })
   password: string;
-
+  
   @Column({
     default: false,
   })

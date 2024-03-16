@@ -69,7 +69,7 @@ export class UserService {
   async getMe(user: UserEntity): Promise<UserRes> {
     const selectedUser = await this.dataSource
       .createQueryBuilder(UserEntity, 'user')
-      .select(['user.id', 'user.email', 'user.isActive'])
+      .select(['user.id', 'user.email'])
       .leftJoinAndSelect('user.store', 'store')
       .addSelect(['store.id', 'store.name', 'store.url'])
       .where({ email: user.email })
@@ -131,6 +131,7 @@ export class UserService {
                 HttpStatus.BAD_REQUEST,
             );
         }
+
         try {
 
             user.isActive = true;

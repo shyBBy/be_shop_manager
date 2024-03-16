@@ -13,7 +13,7 @@ export interface UserProfile extends UserCreate {
 export interface UserProfileRes {
     id: string;
     email: string;
-    isActive: boolean;
+    isActive: Boolean;
     store: {
         id: string,
         name: string,
