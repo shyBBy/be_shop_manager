@@ -40,7 +40,9 @@ export class ProductService {
                     per_page: 20,
                 },
             });
+            console.log('RES:', res)
             const products = res.data || [];
+            console.log('PRODUCTS', products)
             return products;
         } catch (e) {
             console.log(e);
