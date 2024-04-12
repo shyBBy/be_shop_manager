@@ -14,7 +14,6 @@ export class ProductController {
   getAll(@UserObj() user: UserEntity): Promise<GetListOfAllProductsResponse> {
     return this.productService.getAllProducts(user.id);
   }
-
   @Get('/:ean')
   @UseGuards(JwtAuthGuard)
   getOneByEan(@Param('ean') ean: string, @UserObj() user: UserEntity) {

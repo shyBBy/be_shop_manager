@@ -15,8 +15,7 @@ export class ProductService {
 
     async getOneByEan(ean, user_uuid): Promise<any> {
         const store = await this.storeService.getStoreByUserId(user_uuid);
-        const url = `${store.store_url}/wp-json/wc/v3/orders/${ean}`;
-
+        const url = `${store.store_url}/wp-json/wc/v3/products?ean=${ean}`;
 
         const res = await axios.get(url, {headers: store.headers});
 
