@@ -19,12 +19,8 @@ export class ProductService {
 
 
         const res = await axios.get(url, {headers: store.headers});
-        const productRes = res.data || {};
 
-        const orderData = {
-            product: productRes,
-        };
-        return orderData;
+        return  res.data || {};
 
 
     }
@@ -40,10 +36,7 @@ export class ProductService {
                     per_page: 20,
                 },
             });
-            console.log('RES:', res)
-            const products = res.data || [];
-            console.log('PRODUCTS', products)
-            return products;
+            return res.data || [];
         } catch (e) {
             console.log(e);
             throw new HttpException(

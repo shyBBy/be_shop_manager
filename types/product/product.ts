@@ -174,10 +174,10 @@ export interface SimpleProductInterface {
     state_description: string;
 }
 
-export interface GetOneProductResponse {
-    product: ProductProfileInterface,
-}
+// export interface GetOneProductResponse {
+//     product: ProductProfileInterface,
+// }
 
-// export type GetOneOrderResponse = OrderProfileInterface
+export type GetOneProductResponse = ProductProfileInterface
 
 export type GetListOfAllProductsResponse = GetOneProductResponse[]

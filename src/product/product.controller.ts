@@ -12,7 +12,6 @@ export class ProductController {
   @Get('/list')
   @UseGuards(JwtAuthGuard)
   getAll(@UserObj() user: UserEntity): Promise<GetListOfAllProductsResponse> {
-    console.log('w CONTROLLER')
     return this.productService.getAllProducts(user.id);
   }
 
