@@ -2,7 +2,7 @@ import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import axios from "axios";
 import {DataSource} from "typeorm";
 import {StoreService} from "../store/store.service";
-import {GetListOfAllProductsResponse} from "../../types/product/product";
+import {GetListOfAllProductsResponse, GetOneProductResponse} from "../../types/product/product";
 
 @Injectable()
 export class ProductService {
@@ -30,6 +30,13 @@ export class ProductService {
         return res.data || {} || [];
 
 
+    }
+
+    async getOneById(productId, user_uuid): Promise<GetOneProductResponse> {
+        const store = await this.storeService.getStoreByUserId(user_uuid);
+        const url = `${store.store_url}/wp-json/wc/v3/products/${productId}`;
+        const res = await axios.get(url, {headers: store.headers});
+        return res.data || {};
     }
 
     async getAllProducts(user_id?: string): Promise<GetListOfAllProductsResponse> {

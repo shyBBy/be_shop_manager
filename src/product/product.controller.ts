@@ -15,6 +15,12 @@ export class ProductController {
     return this.productService.getAllProducts(user.id);
   }
 
+  @Get('/id/:id')
+  @UseGuards(JwtAuthGuard)
+  getOneById(@Param('id') id: string, @UserObj() user: UserEntity) {
+    return this.productService.getOneById(id, user.id);
+  }
+
   @Get('/name/:name')
   @UseGuards(JwtAuthGuard)
   getOneByName(@Param('name') name: string, @UserObj() user: UserEntity) {
