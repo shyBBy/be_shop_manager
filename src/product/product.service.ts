@@ -3,6 +3,7 @@ import axios from "axios";
 import {DataSource} from "typeorm";
 import {StoreService} from "../store/store.service";
 import {GetListOfAllProductsResponse, GetOneProductResponse} from "../../types/product/product";
+import {createResponse} from "../utils/createResponse";
 
 @Injectable()
 export class ProductService {
@@ -39,11 +40,27 @@ export class ProductService {
         return res.data || {};
     }
 
+    async updateStockQuantity(productId, quantity, user_uuid): Promise<any> {
+        const store = await this.storeService.getStoreByUserId(user_uuid);
+        const url = `${store.store_url}/wp-json/wc/v3/products/${productId}`;
+
+        try {
+            const data = {
+                stock_quantity: quantity
+            }
+            const res = await axios.put(url, data, {headers: store.headers});
+            return createResponse(true, `Ustawiłeś stok produktu na: ${quantity}`, 200)
+        } catch (e) {
+            return createResponse(false, `Coś poszło nie tak`, 400)
+        }
+    }
+
     async getAllProducts(user_id?: string): Promise<GetListOfAllProductsResponse> {
         const store = await this.storeService.getStoreByUserId(user_id);
 
         const url = `${store.store_url}/wp-json/wc/v3/products`;
         try {
+
             const res = await axios.get(url, {
                 headers: store.headers,
                 params: {

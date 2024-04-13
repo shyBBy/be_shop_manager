@@ -1,4 +1,4 @@
-import {Controller, Get, Param, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UseGuards} from '@nestjs/common';
 import { ProductService } from './product.service';
 import {JwtAuthGuard} from "../guards/jwt-auth.guard";
 import {UserObj} from "../decorators/user-object.decorator";
@@ -13,6 +13,15 @@ export class ProductController {
   @UseGuards(JwtAuthGuard)
   getAll(@UserObj() user: UserEntity): Promise<GetListOfAllProductsResponse> {
     return this.productService.getAllProducts(user.id);
+  }
+
+  @Get('/update/stock/:id/:quantity')
+  @UseGuards(JwtAuthGuard)
+  updateStockQuantity(
+      @Param('id') id: string,
+      @Param('quantity') quantity: string,
+      @UserObj() user: UserEntity) {
+      return this.productService.updateStockQuantity(id, quantity, user.id);
   }
 
   @Get('/id/:id')
