@@ -14,6 +14,13 @@ export class ProductController {
   getAll(@UserObj() user: UserEntity): Promise<GetListOfAllProductsResponse> {
     return this.productService.getAllProducts(user.id);
   }
+
+  @Get('/name/:name')
+  @UseGuards(JwtAuthGuard)
+  getOneByName(@Param('name') name: string, @UserObj() user: UserEntity) {
+    return this.productService.getOneByName(name, user.id);
+  }
+
   @Get('/:ean')
   @UseGuards(JwtAuthGuard)
   getOneByEan(@Param('ean') ean: string, @UserObj() user: UserEntity) {

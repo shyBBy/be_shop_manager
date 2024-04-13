@@ -1,6 +1,5 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import axios from "axios";
-import {getTrackingNumberFromOrder} from "../utils/getTrackingNumberFromOrder";
 import {DataSource} from "typeorm";
 import {StoreService} from "../store/store.service";
 import {GetListOfAllProductsResponse} from "../../types/product/product";
@@ -19,7 +18,16 @@ export class ProductService {
 
         const res = await axios.get(url, {headers: store.headers});
 
-        return  res.data || {};
+        return res.data || {};
+    }
+
+    async getOneByName(name, user_uuid): Promise<any> {
+        const store = await this.storeService.getStoreByUserId(user_uuid);
+        const url = `${store.store_url}/wp-json/wc/v3/products?search=${name}`;
+
+        const res = await axios.get(url, {headers: store.headers});
+
+        return res.data || {} || [];
 
 
     }
