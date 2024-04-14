@@ -15,6 +15,12 @@ export class ProductController {
     return this.productService.getAllProducts(user.id);
   }
 
+  @Get('/variant/list/:id')
+  @UseGuards(JwtAuthGuard)
+  getAllProductsVariants(@Param('id') id: string, @UserObj() user: UserEntity): Promise<GetListOfAllProductsResponse> {
+    return this.productService.getAllProductsVariants(id, user.id);
+  }
+
   @Get('/update/stock/:id/:quantity')
   @UseGuards(JwtAuthGuard)
   updateStockQuantity(

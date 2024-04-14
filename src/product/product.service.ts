@@ -81,4 +81,27 @@ export class ProductService {
 
     }
 
+    async getAllProductsVariants(id, user_id?: string): Promise<GetListOfAllProductsResponse> {
+        const store = await this.storeService.getStoreByUserId(user_id);
+
+        const url = `${store.store_url}/wp-json/wc/v3/products/${id}/variations`;
+        try {
+
+            const res = await axios.get(url, {
+                headers: store.headers,
+            });
+            return res.data || [];
+        } catch (e) {
+            console.log(e);
+            throw new HttpException(
+                {
+                    message: `Coś poszło nie tak, spróbuj raz jeszcze.`,
+                    isSuccess: false,
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
+    }
+
 }
