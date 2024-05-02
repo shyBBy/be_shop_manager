@@ -21,6 +21,15 @@ export class ProductController {
     return this.productService.getAllProductsVariants(id, user.id);
   }
 
+  @Get('/update/ean/:id/:ean')
+  @UseGuards(JwtAuthGuard)
+  updateEan(
+      @Param('id') id: string,
+      @Param('ean') ean: string,
+      @UserObj() user: UserEntity) {
+    return this.productService.updateEan(id, ean, user.id);
+  }
+
   @Get('/update/stock/:id/:quantity')
   @UseGuards(JwtAuthGuard)
   updateStockQuantity(

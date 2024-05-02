@@ -55,6 +55,26 @@ export class ProductService {
         }
     }
 
+    async updateEan(productId, ean, user_uuid): Promise<any> {
+        const store = await this.storeService.getStoreByUserId(user_uuid);
+        const url = `${store.store_url}/wp-json/wc/v3/products/${productId}`;
+
+        try {
+            const data = {
+                meta_data: [
+                    {
+                        key: '_alg_ean',
+                        value: ean
+                    }
+                ]
+            }
+            const res = await axios.put(url, data, {headers: store.headers});
+            return createResponse(true, `Ustawiłeś stok produktu na: ${ean}`, 200)
+        } catch (e) {
+            return createResponse(false, `Coś poszło nie tak`, 400)
+        }
+    }
+
     async getAllProducts(user_id?: string): Promise<GetListOfAllProductsResponse> {
         const store = await this.storeService.getStoreByUserId(user_id);
 
