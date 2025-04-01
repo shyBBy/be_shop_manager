@@ -61,7 +61,7 @@ export class StatusService {
 
 
     //nazwa do zmiany
-    @Cron(CronExpression.EVERY_3_HOURS)
+    @Cron(CronExpression.EVERY_2_HOURS)
     async getAllOrdersAndCheckStatusAndChangeIt() {
         const orders = await this.getOrdersInTransitOrProcessingWithPackageNumber();
         let ordersWithDeliveredStatus = []

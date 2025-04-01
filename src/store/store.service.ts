@@ -67,19 +67,92 @@ export class StoreService {
         };
     }
 
-    @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
-    async refreshFurgonetkaToken() {
+    // @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
+    // async refreshFurgonetkaToken() {
+    //     try {
+    //         const store_url = process.env.WOOCOMMERCE_STORE_URL
+    //         const store = await StoreEntity.findOneBy({url: store_url})
+    //         const furgonetka_access_token = await getToken();
+    //         store.furgonetka_access_token = furgonetka_access_token
+    //         await store.save()
+    //         return createResponse(true, 'Pomyślnie zaaktualizowano token', 200)
+    //     } catch (e) {
+    //         return createResponse(false, `Coś poszło nie tak`, 400)
+    //     }
+    // }
+
+
+    async fetchStore(storeUrl: string): Promise<StoreEntity | null> {
         try {
-            const store_url = process.env.WOOCOMMERCE_STORE_URL
-            const store = await StoreEntity.findOneBy({url: store_url})
-            const furgonetka_access_token = await getToken();
-            store.furgonetka_access_token = furgonetka_access_token
-            await store.save()
-            return createResponse(true, 'Pomyślnie zaaktualizowano token', 200)
-        } catch (e) {
-            return createResponse(false, `Coś poszło nie tak`, 400)
+            const store = await StoreEntity.findOneBy({ url: storeUrl });
+            if (!store) {
+                console.error('Nie znaleziono sklepu z podanym URL:', storeUrl);
+                return null;
+            }
+            return store;
+        } catch (error) {
+            console.error('Błąd podczas pobierania sklepu:', error);
+            throw new Error('Błąd podczas pobierania sklepu');
         }
     }
+
+    async fetchNewToken(): Promise<string | null> {
+        try {
+            const token = await getToken();
+            if (!token) {
+                console.error('Nie udało się pobrać nowego tokenu');
+                return null;
+            }
+            return token;
+        } catch (error) {
+            console.error('Błąd podczas pobierania nowego tokenu:', error);
+            throw new Error('Błąd podczas pobierania nowego tokenu');
+        }
+    }
+
+    async updateStoreToken(store: StoreEntity, token: string): Promise<boolean> {
+        try {
+            store.furgonetka_access_token = token;
+            await store.save();
+            console.log('Token został pomyślnie zapisany:', token);
+            return true;
+        } catch (error) {
+            console.error('Błąd podczas aktualizacji tokenu w bazie danych:', error);
+            return false;
+        }
+    }
+    
+
+    @Cron(CronExpression.EVERY_WEEK)
+    async refreshFurgonetkaToken() {
+    const storeUrl = process.env.WOOCOMMERCE_STORE_URL;
+
+    try {
+        // Krok 1: Pobranie encji sklepu
+        const store = await this.fetchStore(storeUrl);
+        if (!store) {
+            return createResponse(false, 'Nie znaleziono sklepu z podanym URL', 404);
+        }
+
+        // Krok 2: Pobranie nowego tokenu
+        const newToken = await this.fetchNewToken();
+        if (!newToken) {
+            return createResponse(false, 'Nie udało się pobrać nowego tokenu', 400);
+        }
+
+        // Krok 3: Zaktualizowanie tokenu w bazie danych
+        const updateSuccess = await this.updateStoreToken(store, newToken);
+        if (!updateSuccess) {
+            return createResponse(false, 'Błąd podczas aktualizacji tokenu w bazie danych', 500);
+        }
+
+        return createResponse(true, 'Pomyślnie zaaktualizowano token', 200);
+    } catch (error) {
+        console.error('Błąd podczas odświeżania tokenu Furgonetka:', error);
+        return createResponse(false, 'Wystąpił nieoczekiwany błąd', 500);
+    }
+}
+
 
     //COUPON SECTION START
 
