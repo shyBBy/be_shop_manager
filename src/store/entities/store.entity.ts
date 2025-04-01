@@ -37,10 +37,11 @@ export class StoreEntity extends BaseEntity {
   consumer_secret: string;
 
   @Column({
+    type: 'varchar',
+    length: 1024, // Dowolna większa wartość niż 255
     default: '',
-    length: 1000, // Zwiększona długość kolumny na 1000
   })
-  furgonetka_access_token: string;
+  furgonetka_access_token!: string;
 
   @OneToOne(() => UserEntity, (user) => user.store)
   @JoinTable()
